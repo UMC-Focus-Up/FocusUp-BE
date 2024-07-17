@@ -1,7 +1,7 @@
 ---
 name: refactor report
 about: Refactor existing feature
-title: ''
+title: "[Refactor] 리팩토링 내용"
 labels: ''
 assignees: ''
 
@@ -12,7 +12,7 @@ Lables에서 담당자와 도메인, 어떤 작업인지에 관련한 라벨을 
 (ex. 💻 담당자 / 도메인 / 🔨 Refactor )
 */
 
-## 🔥 Fix Issue
+## 🔥 Refactor Issue
 리팩토링 이슈 관련 내용을 입력하세요.
 
 ## ✅ TODO
