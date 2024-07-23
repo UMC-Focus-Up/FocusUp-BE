@@ -62,7 +62,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}  # SSH 접속에 필요한 비밀 키
           script: |
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull ${{ secrets.DOCKER_USERNAME }}/shortdari:latest
-            docker stop web || true
-            docker rm web || true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/focusup:latest
+            docker stop focusup || true
+            docker rm focusup || true
             docker run -d --name focusup_server --network docker_network -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/focusup:latest
