@@ -14,7 +14,7 @@ public class RoutineResponseDTO {
         private List<Routine> routines;
     }
 
-    // 오늘의 루틴 리스트 조회 response DTO
+    // 특정일의 루틴 리스트 조회 response DTO
     @Getter
     public static class GetTodayRoutineList {
         private List<Routine> routines;
