@@ -23,7 +23,7 @@ public class Level extends BaseEntity {
     @Column(nullable = false)
     private int minute;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "level_history_id")
     private LevelHistory levelHistory; //???????
 

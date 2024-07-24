@@ -12,6 +12,7 @@ public class LevelResponse {
     @AllArgsConstructor
     public static class NewLevelResultDTO {
         Long userId;
-        Integer newlevel;
+        Integer level;
+        Boolean isUserLevel;
     }
 }

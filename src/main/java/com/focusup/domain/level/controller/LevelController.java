@@ -18,8 +18,12 @@ public class LevelController {
 
     @PutMapping("/{userId}")
     public Response<LevelResponse.NewLevelResultDTO> putNewLevel (@PathVariable("userId") Long userId, @RequestParam(name = "level") Long level) {
-        LevelHistory updateLevel = levelService.updateLevel(userId, level);
+        if (level == 0) {
+            LevelHistory levelHistory = levelService.findLevel(userId);
+            return Response.success(LevelHistoryConverter.toLevelResultDTO(levelHistory));
+        }
 
+        LevelHistory updateLevel = levelService.updateLevel(userId, level);
         return Response.success(LevelHistoryConverter.toUpdateLevelResultDTO(updateLevel));
     }
 }

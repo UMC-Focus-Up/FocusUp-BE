@@ -16,7 +16,16 @@ public class LevelHistoryConverter {
     public static LevelResponse.NewLevelResultDTO toUpdateLevelResultDTO(LevelHistory levelHistory) {
         return LevelResponse.NewLevelResultDTO.builder()
                 .userId(levelHistory.getUser().getId())
-                .newlevel(levelHistory.getNewLevel().getLevel())
+                .level(levelHistory.getNewLevel().getLevel())
+                .isUserLevel(false)
+                .build();
+    }
+
+    public static LevelResponse.NewLevelResultDTO toLevelResultDTO(LevelHistory levelHistory) {
+        return LevelResponse.NewLevelResultDTO.builder()
+                .userId(levelHistory.getUser().getId())
+                .level(levelHistory.getLevel().getLevel())
+                .isUserLevel(true)
                 .build();
     }
 }
