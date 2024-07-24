@@ -3,6 +3,7 @@ package com.focusup.domain.routine.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class RoutineRequestDTO {
@@ -13,6 +14,8 @@ public class RoutineRequestDTO {
     public static class CreateRoutine {
         private String routineName;
         private String repeatCycleDay;
+
+        private LocalDate date;
 
         private LocalDateTime StartTime;
 
