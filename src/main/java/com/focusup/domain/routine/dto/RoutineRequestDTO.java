@@ -1,10 +1,13 @@
 package com.focusup.domain.routine.dto;
 
+import com.focusup.entity.enums.Day;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 public class RoutineRequestDTO {
 
@@ -13,12 +16,12 @@ public class RoutineRequestDTO {
     @Getter
     public static class CreateRoutine {
         private String routineName;
-        private String repeatCycleDay;
+        private List<Day> repeatCycleDay;
 
         private LocalDate date;
 
-        private LocalDateTime StartTime;
+        private LocalTime StartTime;
 
-        private LocalDateTime EndTime;
+        private LocalTime EndTime;
     }
 }
