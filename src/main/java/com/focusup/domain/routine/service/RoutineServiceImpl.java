@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RoutineServiceImpl {
+public class RoutineServiceImpl implements RoutineService{
     private final RoutineRepository routineRepository;
     private final UserRoutineRepository userRoutineRepository;
 
