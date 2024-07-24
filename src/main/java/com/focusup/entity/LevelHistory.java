@@ -29,4 +29,9 @@ public class LevelHistory extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Integer setNewLevel(Level newLevel) {
+        this.newLevel = newLevel;
+        return newLevel.getLevel();
+    }
 }

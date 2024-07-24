@@ -24,18 +24,19 @@ public class LevelService {
 
     @Transactional
     public LevelHistory findLevel (Long userId) {
+        userRepository.findById(userId).orElseThrow(() -> new MemberException(ErrorCode.USER_NOT_FOUND));
+
         return em.createQuery("select lh from LevelHistory lh where lh.user.id = :userId", LevelHistory.class)
                 .getSingleResult();
     }
 
     @Transactional
     public LevelHistory updateLevel(Long userId, Long newLevel) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new MemberException(ErrorCode.USER_NOT_FOUND));
+        LevelHistory levelHistory = findLevel(userId);
         Level level = levelRepository.findById(newLevel).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
+        levelHistory.setNewLevel(level);
 
-        LevelHistory updateLevel = LevelHistoryConverter.toUpdateLevel(user, level);
-
-        return updateLevel;
+        return levelHistory;
     }
 }
 

@@ -23,7 +23,7 @@ public class LevelController {
             return Response.success(LevelHistoryConverter.toLevelResultDTO(levelHistory));
         }
 
-        LevelHistory updateLevel = levelService.updateLevel(userId, level);
-        return Response.success(LevelHistoryConverter.toUpdateLevelResultDTO(updateLevel));
+        LevelHistory updatedLevel = levelService.updateLevel(userId, level);
+        return Response.success(LevelHistoryConverter.toUpdateLevelResultDTO(updatedLevel));
     }
 }
