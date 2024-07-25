@@ -5,7 +5,6 @@ import com.focusup.entity.enums.SocialType;
 import jakarta.persistence.*;
 import lombok.*;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Entity
@@ -32,6 +31,19 @@ public class User extends BaseEntity {
     @Builder.Default
     private int point = 0;
 
-    @Column
-    private String curItem;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item curItem;
+
+    // 기본 생성자
+    public User() {}
+
+    // 필드 초기화를 위한 생성자
+    public User(String email, SocialType socialType, int life, int point, Item curItem) {
+        this.email = email;
+        this.socialType = socialType;
+        this.life = life;
+        this.point = point;
+        this.curItem = curItem;
+    }
 }
