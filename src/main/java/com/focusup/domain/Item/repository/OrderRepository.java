@@ -6,9 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
-    @Query("SELECT CASE WHEN COUNT(o) > 0 THEN true ELSE false END FROM Order o WHERE o.user.id = :userId AND o.item.id = :itemId")
-    boolean isPurchasedByUser(@Param("userId") Long userId, @Param("itemId") Long itemId);
+    @Query("SELECT o.item.id FROM Order o WHERE o.user.id = :userId")
+    List<Long> findItemIdsByUserId(@Param("userId") Long userId);
 }
