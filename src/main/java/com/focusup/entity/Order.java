@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "orders")
 @Getter
 public class Order extends BaseEntity {
     @Id
