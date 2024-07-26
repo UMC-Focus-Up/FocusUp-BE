@@ -27,4 +27,11 @@ public class RoutineRequestDTO {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         private LocalTime endTime;
     }
+
+    // 루틴 완료 request용 DTO
+    @Getter
+    public static class FinishRoutine {
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime execTime;
+    }
 }

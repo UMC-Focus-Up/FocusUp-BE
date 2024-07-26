@@ -21,7 +21,7 @@ public interface RoutineService {
     public RoutineResponseDTO.GetTodayRoutineList getTodayRoutineList(LocalDate date);
 
     // 루틴 완료 service
-    public Long finishRoutine(Long routineId);
+    public Long finishRoutine(RoutineRequestDTO.FinishRoutine request, Long routineId);
 
     // 루틴 삭제 service
     public Long deleteRoutine(Long routineId);

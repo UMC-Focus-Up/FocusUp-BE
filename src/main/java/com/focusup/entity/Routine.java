@@ -9,7 +9,7 @@ import java.time.LocalTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Getter
 public class Routine extends BaseEntity {
@@ -23,7 +23,7 @@ public class Routine extends BaseEntity {
 
     @Column(nullable = false)
     @Builder.Default
-    private float achieveRate = 0;
+    private double achieveRate = 0;
 
     @Column(nullable = false)
     private LocalDateTime startTime;

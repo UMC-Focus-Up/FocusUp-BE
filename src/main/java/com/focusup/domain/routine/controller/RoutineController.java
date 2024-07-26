@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 public class RoutineController {
     private final RoutineServiceImpl routineService;
 
-    // 루틴 생성하기 POST method
+    // 루틴 생성하기 POST method - 나중에 userId 삭제 필요
     @PostMapping("/create")
     public Response<Long> createRoutine(@RequestBody RoutineRequestDTO.CreateRoutine request, @RequestParam Long userId) {
         Long userRoutineId = routineService.createUserRoutine(request, userId); // 임시 userId
@@ -23,8 +23,9 @@ public class RoutineController {
 
     // 루틴 완료하기 POST method
     @PostMapping("/{routineId}")
-    public Response<Long> finishRoutine(@PathVariable Long routineId) {
-        return null;
+    public Response<Long> finishRoutine(@RequestBody RoutineRequestDTO.FinishRoutine request, @PathVariable Long routineId) {
+        Long finishedRoutineId = routineService.finishRoutine(request, routineId);
+        return Response.success(finishedRoutineId);
     }
 
     // 루틴 삭제하기 DELETE method

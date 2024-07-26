@@ -14,14 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -101,8 +98,24 @@ public class RoutineServiceImpl implements RoutineService{
     }
 
     // 루틴 완료 service
-    public Long finishRoutine(Long routineId) {
-        return null;
+    public Long finishRoutine(RoutineRequestDTO.FinishRoutine request, Long routineId) {
+        // 루틴 id로 해당 루틴 가져오기
+        Routine routine = routineRepository.findById(routineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+        // 전체 루틴 시간 (분 단위)
+        long totalTime = Duration.between(routine.getStartTime(), routine.getGoalTime()).toMinutes();
+        // 실행 시간 (분 단위)
+        long execTime = Duration.between(LocalTime.MIDNIGHT, request.getExecTime()).toMinutes();
+        // 달성률 계산
+        double achieveRate = (double) execTime / (totalTime * 100.0);
+        // Routine 업데이트
+        routine = routine.toBuilder()
+                .execTime(request.getExecTime())
+                .achieveRate(achieveRate)
+                .build();
+        // 업데이트된 Routine 저장
+        routineRepository.save(routine);
+
+        return routineId;
     }
 
     // 루틴 삭제 service
