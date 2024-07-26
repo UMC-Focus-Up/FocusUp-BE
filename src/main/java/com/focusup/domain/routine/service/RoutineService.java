@@ -24,5 +24,5 @@ public interface RoutineService {
     public Long finishRoutine(RoutineRequestDTO.FinishRoutine request, Long routineId);
 
     // 루틴 삭제 service
-    public Long deleteRoutine(Long routineId);
+    public void deleteRoutine(Long userRoutineId);
 }

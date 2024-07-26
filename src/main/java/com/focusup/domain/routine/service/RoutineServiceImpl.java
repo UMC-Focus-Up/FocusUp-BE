@@ -119,7 +119,8 @@ public class RoutineServiceImpl implements RoutineService{
     }
 
     // 루틴 삭제 service
-    public Long deleteRoutine(Long routineId) {
-        return null;
+    public void deleteRoutine(Long userRoutineId) {
+        userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+        userRoutineRepository.deleteById(userRoutineId);
     }
 }

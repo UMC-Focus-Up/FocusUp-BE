@@ -29,9 +29,10 @@ public class RoutineController {
     }
 
     // 루틴 삭제하기 DELETE method
-    @DeleteMapping("/{routineId}")
-    public Response<String> deleteRoutine(@PathVariable Long routineId) {
-        return null;
+    @DeleteMapping("/{userRoutineId}")
+    public Response deleteRoutine(@PathVariable Long userRoutineId) {
+        routineService.deleteRoutine(userRoutineId);
+        return Response.success();
     }
 
     // 루틴 전체 리스트 조회하기 GET method

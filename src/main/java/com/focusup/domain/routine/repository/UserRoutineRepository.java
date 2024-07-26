@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> {
     List<UserRoutine> findByUser(User user);
+    Optional<UserRoutine> findById(Long id);
 }
