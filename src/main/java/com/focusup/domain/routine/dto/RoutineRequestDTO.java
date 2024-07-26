@@ -1,11 +1,11 @@
 package com.focusup.domain.routine.dto;
 
-import com.focusup.entity.enums.Day;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -15,13 +15,16 @@ public class RoutineRequestDTO {
     @Builder
     @Getter
     public static class CreateRoutine {
+
         private String routineName;
-        private List<Day> repeatCycleDay;
+        private List<DayOfWeek> repeatCycleDay;
 
-        private LocalDate date;
+        private LocalDate startDate;
 
-        private LocalTime StartTime;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime startTime;
 
-        private LocalTime EndTime;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime endTime;
     }
 }

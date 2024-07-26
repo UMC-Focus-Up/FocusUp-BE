@@ -2,18 +2,23 @@ package com.focusup.domain.routine.controller;
 
 import com.focusup.domain.routine.dto.RoutineRequestDTO;
 import com.focusup.domain.routine.dto.RoutineResponseDTO;
+import com.focusup.domain.routine.service.RoutineServiceImpl;
 import com.focusup.global.apiPayload.Response;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/routine")
 public class RoutineController {
+    private final RoutineServiceImpl routineService;
+
     // 루틴 생성하기 POST method
     @PostMapping("/create")
-    public Response<Long> createRoutine(@RequestBody RoutineRequestDTO.CreateRoutine request) {
-        return null;
+    public Response<Long> createRoutine(@RequestBody RoutineRequestDTO.CreateRoutine request, @RequestParam Long userId) {
+        Long userRoutineId = routineService.createUserRoutine(request, userId); // 임시 userId
+        return Response.success(userRoutineId);
     }
 
     // 루틴 완료하기 POST method

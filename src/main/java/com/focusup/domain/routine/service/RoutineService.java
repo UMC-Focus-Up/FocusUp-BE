@@ -1,16 +1,18 @@
 package com.focusup.domain.routine.service;
 
+import com.focusup.domain.routine.dto.RoutineRequestDTO;
 import com.focusup.domain.routine.dto.RoutineResponseDTO;
-import com.focusup.entity.enums.Day;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.focusup.entity.Routine;
+import com.focusup.entity.UserRoutine;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 public interface RoutineService {
-    public String createRoutine(String name, LocalDate date, List<Day> days, LocalTime startTiem, LocalTime endTime);
+    public Long createUserRoutine(RoutineRequestDTO.CreateRoutine request, Long userId);
+
+    public Routine createRoutineInfo(LocalDateTime startTime, LocalDateTime endTime, UserRoutine userRoutine);
 
     // 모든 루틴 리스트 조회 service
     public RoutineResponseDTO.GetAllRoutineList getAllRoutineList();

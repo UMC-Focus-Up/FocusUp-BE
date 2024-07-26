@@ -20,6 +20,9 @@ public enum ErrorCode {
 
     // User 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
+
+    // Routine 에러
+    ROUTINE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 루틴입니다.")
     ;
 
     private final HttpStatus httpStatus;
