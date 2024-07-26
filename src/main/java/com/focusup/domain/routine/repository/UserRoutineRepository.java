@@ -12,6 +12,4 @@ import java.util.List;
 @Repository
 public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> {
     List<UserRoutine> findByUser(User user);
-
-    List<UserRoutine> findByDate(LocalDate date);
 }

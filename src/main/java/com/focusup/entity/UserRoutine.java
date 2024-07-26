@@ -7,10 +7,12 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Getter
 public class UserRoutine extends BaseEntity {
@@ -18,22 +20,17 @@ public class UserRoutine extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @Column(length = 30, nullable = false)
+    private String name;
 
     @Column(nullable = false)
-    @Builder.Default
-    private LocalTime execTime = LocalTime.of(0, 0);
-
-    @Column(nullable = false)
-    @Builder.Default
-    private float achieveRate = 0;
+    private LocalDate startDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "routine_id")
-    private Routine routine;
+    @Singular
+    @OneToMany(mappedBy = "userRoutine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Routine> routines = new ArrayList<>();
 }
