@@ -1,8 +1,13 @@
 package com.focusup.global.config;
 
 import com.focusup.domain.Item.repository.ItemRepository;
+import com.focusup.domain.Item.service.ItemService;
+import com.focusup.domain.level.repository.LevelHistoryRepository;
+import com.focusup.domain.level.repository.LevelRepository;
 import com.focusup.domain.user.repository.UserRepository;
 import com.focusup.entity.Item;
+import com.focusup.entity.Level;
+import com.focusup.entity.LevelHistory;
 import com.focusup.entity.User;
 import com.focusup.entity.enums.SocialType;
 import jakarta.annotation.PostConstruct;
@@ -15,17 +20,36 @@ public class DataInitializer {
 
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+    private final LevelRepository levelRepository;
+    private final LevelHistoryRepository levelHistoryRepository;
 
-    public DataInitializer(UserRepository userRepository, ItemRepository itemRepository) {
+    public DataInitializer(UserRepository userRepository, ItemRepository itemRepository, LevelRepository levelRepository, LevelHistoryRepository levelHistoryRepository) {
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
+        this.levelRepository = levelRepository;
+        this.levelHistoryRepository = levelHistoryRepository;
     }
 
     @PostConstruct
     public void init() {
-        // 더미 유저
+        // 레벨 목록 (1~7 레벨)
+        if(levelRepository.count() == 0) {
+            levelRepository.saveAll(Arrays.asList(
+                    new Level(1, 2, 10),
+                    new Level(2, 3, 10),
+                    new Level(3, 4, 10),
+                    new Level(4, 5, 10),
+                    new Level(5, 6, 10),
+                    new Level(6, 7, 10),
+                    new Level(7, 8, 10)
+            ));
+        }
+
+        // 더미 유저 + levelHistory 생성
         if(userRepository.count() == 0) {
             userRepository.save(new User("user@naver.com", SocialType.NAVER, 5, 400, null));
+            // 현재 레벨 1, 새로운 레벨 1로 설정 (임시)
+            levelHistoryRepository.save(new LevelHistory(levelRepository.findById(Long.valueOf(1)).get(), levelRepository.findById(Long.valueOf(1)).get(), userRepository.findById(Long.valueOf(1)).get()));
         }
 
         // 아이템 목록

@@ -30,7 +30,14 @@ public class LevelHistory extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Integer setNewLevel(Level newLevel) {
+    // 필드 초기화를 위한 생성자(아이디 제외)
+    public LevelHistory(Level newLevel, Level level, User user) {
+        this.newLevel = newLevel;
+        this.level = level;
+        this.user = user;
+    }
+
+    public int changeLevel(Level newLevel) {
         this.newLevel = newLevel;
         return newLevel.getLevel();
     }

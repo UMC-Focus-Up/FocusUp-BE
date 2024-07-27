@@ -1,9 +1,7 @@
 package com.focusup.domain.level.converter;
 
 import com.focusup.domain.level.dto.LevelResponse;
-import com.focusup.entity.Level;
 import com.focusup.entity.LevelHistory;
-import com.focusup.entity.User;
 
 public class LevelHistoryConverter {
     public static LevelResponse.NewLevelResultDTO toUpdateLevelResultDTO(LevelHistory levelHistory) {
