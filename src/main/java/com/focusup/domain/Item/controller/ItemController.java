@@ -1,5 +1,6 @@
 package com.focusup.domain.Item.controller;
 
+import com.focusup.domain.Item.dto.ItemRequest;
 import com.focusup.domain.Item.dto.ItemResponse;
 import com.focusup.domain.Item.service.ItemService;
 import com.focusup.global.apiPayload.Response;
@@ -21,4 +22,13 @@ public class ItemController {
         return Response.success(storeInfo);
     }
 
+    @PostMapping("/purchase")
+    @Operation(summary = "상점 아이템 구매 API")
+    public Response<?> purchaseItem(@RequestBody ItemRequest.PurchaseDTO request){
+        int point = itemService.purchaseItem(request);
+        return Response.success(ItemResponse.PurchaseDTO.
+                builder()
+                .point(point)
+                .build());
+    }
 }

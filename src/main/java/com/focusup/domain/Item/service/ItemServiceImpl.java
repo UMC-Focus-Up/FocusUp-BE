@@ -1,13 +1,16 @@
 package com.focusup.domain.Item.service;
 
+import com.focusup.domain.Item.dto.ItemRequest;
 import com.focusup.domain.Item.dto.ItemResponse;
 import com.focusup.domain.Item.repository.ItemRepository;
 import com.focusup.domain.Item.repository.OrderRepository;
 import com.focusup.domain.user.repository.UserRepository;
 import com.focusup.entity.Item;
+import com.focusup.entity.Order;
 import com.focusup.entity.User;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,30 @@ public class ItemServiceImpl implements ItemService {
                 .point(point)
                 .itemList(items)
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public int purchaseItem(ItemRequest.PurchaseDTO purchaseDTO) {
+        User user = userRepository.findById(purchaseDTO.getMemberId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 사용자가 존재하지 않을 경우 예외 처리
+        int userPoint = user.getPoint();
+        Item item = itemRepository.findById(purchaseDTO.getItemId())
+                .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND)); // 아이템이 존재하지 않을 경우 예외 처리
+        int price = item.getPrice();
+        if(price <= userPoint){
+            Order order = Order.builder()
+                    .item(item)
+                    .user(user)
+                    .build();
+            orderRepository.save(order);
+            userPoint -= price;
+            user.changePoint(userPoint);
+            return userPoint;
+        }
+        else{
+            throw(new CustomException(ErrorCode.INSUFFICIENT_BALANCE));
+        }
     }
 
     private List<ItemResponse.StoreItemDTO> getItems(Long userId) {

@@ -24,4 +24,10 @@ public class ItemResponse {
         String imageUrl;
         boolean purchased;
     }
+
+    @Builder
+    @Getter
+    public static class PurchaseDTO {
+        int point;
+    }
 }
