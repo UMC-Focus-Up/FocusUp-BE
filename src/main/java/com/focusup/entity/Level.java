@@ -23,10 +23,6 @@ public class Level extends BaseEntity {
     @Column(nullable = false)
     private int minute;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "level_history_id")
-    private LevelHistory levelHistory; //???????
-
     // 필드 초기화를 위한 생성자(아이디 제외)
     public Level(int level, int multiple, int minute) {
         this.level = level;
