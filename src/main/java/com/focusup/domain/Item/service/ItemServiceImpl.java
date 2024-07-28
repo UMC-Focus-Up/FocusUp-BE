@@ -41,10 +41,29 @@ public class ItemServiceImpl implements ItemService {
                 .build();
     }
 
+    @Override
+    public ItemResponse.MyItemListDTO getMyItemList(Long userId) {
+        List<Item> items = orderRepository.findItemsByUserId(userId);
+        System.out.println("item found: " + items);
+        List<ItemResponse.MyItemDTO> itemList = items.stream().map(item ->
+                ItemResponse.MyItemDTO.builder()
+                        .id(item.getId())
+                        .name(item.getName())
+                        .type(item.getType())
+                        .imageUrl(item.getImageUrl())
+                        .build()
+        ).collect(Collectors.toList());
+
+        return ItemResponse.MyItemListDTO.builder()
+                .itemList(itemList)
+                .build();
+    }
+
     private List<ItemResponse.StoreItemDTO> getItems(Long userId) {
         List<Item> items = itemRepository.findAll(); // 모든 아이템
 
         List<Long> purchasedItemIds = orderRepository.findItemIdsByUserId(userId); // 사용자가 구매한 아이템 목록
+        System.out.println("item found: " + purchasedItemIds);
 
         // 구매 여부 포함한 정보 반환
         return items.stream().map(item ->

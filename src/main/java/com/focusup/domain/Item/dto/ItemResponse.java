@@ -24,4 +24,19 @@ public class ItemResponse {
         String imageUrl;
         boolean purchased;
     }
+
+    @Builder
+    @Getter
+    public static class MyItemListDTO {
+        List<MyItemDTO> itemList;
+    }
+
+    @Builder
+    @Getter
+    public static class MyItemDTO {
+        Long id;
+        String name;
+        String type;
+        String imageUrl;
+    }
 }
