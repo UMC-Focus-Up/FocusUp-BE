@@ -8,8 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "orders")
 @Getter
-public class Orders extends BaseEntity {
+public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
