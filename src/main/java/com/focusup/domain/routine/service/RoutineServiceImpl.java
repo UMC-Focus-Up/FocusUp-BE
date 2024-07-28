@@ -134,7 +134,7 @@ public class RoutineServiceImpl implements RoutineService{
         // 실행 시간 (분 단위)
         long execTime = Duration.between(LocalTime.MIDNIGHT, request.getExecTime()).toMinutes();
         // 달성률 계산
-        double achieveRate = (double) execTime / (totalTime * 100.0);
+        double achieveRate = ((double) execTime / totalTime) * 100.0;
         // Routine 업데이트
         routine = routine.toBuilder()
                 .execTime(request.getExecTime())
