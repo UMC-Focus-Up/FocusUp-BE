@@ -31,4 +31,11 @@ public class ItemController {
                 .point(point)
                 .build());
     }
+    @GetMapping("/myitem")
+    @Operation(summary = "내 아이템 목록 조회 API")
+    public Response<ItemResponse.MyItemListDTO> getMyItemList(@RequestParam Long userId){
+        ItemResponse.MyItemListDTO itemList = itemService.getMyItemList(userId);
+        return Response.success(itemList);
+    }
+
 }
