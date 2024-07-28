@@ -19,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -89,7 +90,35 @@ public class RoutineServiceImpl implements RoutineService{
 
     // 모든 루틴 리스트 조회 service
     public RoutineResponseDTO.GetAllRoutineList getAllRoutineList() {
-        return null;
+        // 모든 루틴 조회
+        List<Routine> routines = routineRepository.findAll();
+
+        // 엔티티 리스트를 DTO 리스트로 변환
+        List<RoutineResponseDTO.Routine> routineDTOs = routines.stream()
+                .map(routine -> {
+                    // startTime의 date만 추출
+                    LocalDate startDate = routine.getStartTime().toLocalDate();
+                    // goalTime과 startTime 사이의 Duration 계산
+                    Duration duration = Duration.between(routine.getStartTime(), routine.getGoalTime());
+                    // Duration에서 시간과 분을 추출하여 LocalTime 생성, 초는 00으로 설정
+                    LocalTime targetTime = LocalTime.of(
+                            (int) duration.toHours(),        // 시간
+                            (int) (duration.toMinutes() % 60), // 분
+                            0);
+
+                    return RoutineResponseDTO.Routine.builder()
+                            .id(routine.getId())
+                            .name(routine.getUserRoutine().getName()) // UserRoutine에서 name 가져오기
+                            .date(startDate)
+                            .targetTime(targetTime)
+                            .execTime(routine.getExecTime())
+                            .achieveRate((float) routine.getAchieveRate())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        // DTO 객체로 변환
+        return RoutineResponseDTO.GetAllRoutineList.builder().routines(routineDTOs).build();
     }
 
     // 특정 일의 루틴 리스트 조회 service

@@ -38,7 +38,8 @@ public class RoutineController {
     // 루틴 전체 리스트 조회하기 GET method
     @GetMapping("/all")
     public Response<RoutineResponseDTO.GetAllRoutineList> getAllRoutine() {
-        return null;
+        RoutineResponseDTO.GetAllRoutineList response = routineService.getAllRoutineList();
+        return Response.success(response );
     }
 
     // 특정 일의 루틴 리스트 조회하기 GET method
