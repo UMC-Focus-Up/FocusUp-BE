@@ -63,6 +63,6 @@ jobs:
           script: |
             docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/focusup:latest
-            docker stop focusup || true
-            docker rm focusup || true
+            docker stop focusup_server || true
+            docker rm focusup_server || true
             docker run -d --name focusup_server --network docker_network -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/focusup:latest

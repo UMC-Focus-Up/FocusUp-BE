@@ -1,9 +1,7 @@
 package com.focusup.domain.Item.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.focusup.domain.Item.dto.ItemResponse;
 
-@Service
-@RequiredArgsConstructor
-public class ItemService {
+public interface ItemService {
+    ItemResponse.StoreInfoDTO getStoreInfo(Long userId);
 }
