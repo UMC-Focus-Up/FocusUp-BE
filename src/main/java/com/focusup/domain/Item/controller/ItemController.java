@@ -3,6 +3,7 @@ package com.focusup.domain.Item.controller;
 import com.focusup.domain.Item.dto.ItemRequest;
 import com.focusup.domain.Item.dto.ItemResponse;
 import com.focusup.domain.Item.service.ItemService;
+import com.focusup.entity.Item;
 import com.focusup.global.apiPayload.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -38,4 +39,17 @@ public class ItemController {
         return Response.success(itemList);
     }
 
+    @PostMapping("/select")
+    @Operation(summary = "캐릭터 아이템 선택 API")
+    public Response<?> selectCharacterItem(@RequestBody ItemRequest.selectCharacterItemDTO request){
+        itemService.selectCharacterItem(request);
+        return Response.success("정상적으로 아이템을 장착하였습니다.");
+    }
+
+    @PostMapping("/deselect")
+    @Operation(summary = "캐릭터 아이템 삭제(해제) API")
+    public Response<?> deselectCharacterItem(@RequestBody ItemRequest.deselectCharacterItemDTO request) {
+        itemService.deselectCharacterItem(request.getUserId());
+        return Response.success("정상적으로 아이템을 삭제하였습니다.");
+    }
 }
