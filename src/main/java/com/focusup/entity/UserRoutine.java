@@ -4,6 +4,7 @@ import com.focusup.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,8 +24,19 @@ public class UserRoutine extends BaseEntity {
     @Column(length = 30, nullable = false)
     private String name;
 
+    @ElementCollection
+    @CollectionTable(name = "user_routine_days", joinColumns = @JoinColumn(name = "user_routine_id"))
+    @Column(name = "day_of_week")
+    private List<DayOfWeek> repeatCycleDay = new ArrayList<>();
+
     @Column(nullable = false)
     private LocalDate startDate;
+
+    @Column(nullable = false)
+    private LocalTime startTime;
+
+    @Column(nullable = false)
+    private LocalTime goalTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")

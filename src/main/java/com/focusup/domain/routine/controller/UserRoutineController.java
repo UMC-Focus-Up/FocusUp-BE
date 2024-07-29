@@ -25,4 +25,10 @@ public class UserRoutineController {
         userRoutineService.deleteRoutine(userRoutineId);
         return Response.success();
     }
+
+    // 전체 유저루틴 조회하기 GET method
+    @GetMapping("/all")
+    public Response getAllUserRoutine() {
+        return null;
+    }
 }

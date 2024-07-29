@@ -1,6 +1,7 @@
 package com.focusup.domain.routine.service;
 
 import com.focusup.domain.routine.dto.UserRoutineRequestDTO;
+import com.focusup.domain.routine.dto.UserRoutineResponseDTO;
 import com.focusup.domain.routine.repository.RoutineRepository;
 import com.focusup.domain.routine.repository.UserRoutineRepository;
 import com.focusup.domain.user.repository.UserRepository;
@@ -10,6 +11,7 @@ import com.focusup.entity.UserRoutine;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -43,6 +46,8 @@ public class UserRoutineServiceImpl implements UserRoutineService{
                 .user(user)
                 .name(request.getRoutineName())
                 .startDate(request.getStartDate())
+                .startTime(request.getStartTime())
+                .goalTime(request.getEndTime())
                 .build();
 
         // userRoutine 저장
@@ -58,15 +63,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
 
         // date에 따라 routine 추가
         for (LocalDate date : routineDates) {
-            LocalDateTime startDateTime = LocalDateTime.of(date, request.getStartTime());
-            LocalDateTime endDateTime = LocalDateTime.of(date, request.getEndTime());
-
-            // 시작 시간과 종료 시간 비교하여 종료 시간이 시작 시간보다 이전인 경우 하루를 추가
-            if (request.getEndTime().isBefore(request.getStartTime())) {
-                endDateTime = endDateTime.plusDays(1);
-            }
-
-            routines.add(createRoutineInfo(startDateTime, endDateTime, userRoutine));
+            routines.add(createRoutineInfo(date, userRoutine));
         }
 
         userRoutine = userRoutine.toBuilder()
@@ -77,11 +74,10 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     @Transactional
-    public Routine createRoutineInfo(LocalDateTime startTime, LocalDateTime endTime, UserRoutine userRoutine) {
+    public Routine createRoutineInfo(LocalDate date, UserRoutine userRoutine) {
         // 루틴 생성
         Routine routine = Routine.builder()
-                .startTime(startTime)
-                .goalTime(endTime)
+                .date(date)
                 .userRoutine(userRoutine)
                 .build();
 
@@ -93,5 +89,37 @@ public class UserRoutineServiceImpl implements UserRoutineService{
         // userRoutine 찾고 삭제
         userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
         userRoutineRepository.deleteById(userRoutineId);
+    }
+
+    // 유저 루틴 전체 리스트 조회 service
+    public UserRoutineResponseDTO.GetAllUserRoutineList getAllUserRoutineList() {
+        List<UserRoutine> userRoutines = userRoutineRepository.findAll(Sort.by(Sort.Direction.ASC, "startDate"));
+
+        // 유저 루틴 DTO로 변환
+        List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
+                .map(ur -> UserRoutineResponseDTO.UserRoutine.builder()
+                        .id(ur.getId())
+                        .name(ur.getName())
+                        .build())
+                .collect(Collectors.toList());
+
+        // List DTO로 변환
+        return UserRoutineResponseDTO.GetAllUserRoutineList.builder().routines(userRoutineDTOs).build();
+    }
+
+    // 유저 루틴 상세 정보 조회 service
+    public UserRoutineResponseDTO.UserRoutineDetail getUserRoutineDetail(Long userRoutineId) {
+        UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+
+        // 유저 루틴 DTO로 변환
+        UserRoutineResponseDTO.UserRoutineDetail userRoutineDTOs = UserRoutineResponseDTO.UserRoutineDetail.builder()
+                .routineName(userRoutine.getName())
+                .repeatCycleDay(userRoutine.getRepeatCycleDay())
+                .startTime(userRoutine.getStartTime())
+                .endTime(userRoutine.getGoalTime())
+                .build();
+
+        // List DTO로 변환
+        return userRoutineDTOs;
     }
 }
