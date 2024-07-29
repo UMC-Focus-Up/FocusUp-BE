@@ -21,6 +21,10 @@ public enum ErrorCode {
     // User 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
 
+    // Item 에러
+    INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "포인트가 부족합니다."),
+    ITEM_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 아이템입니다."),
+  
     // Level 에러
     LEVEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레벨입니다."),
     ;
