@@ -1,13 +1,15 @@
 package com.focusup.domain.routine.service;
 
+import com.focusup.domain.level.repository.LevelHistoryRepository;
+import com.focusup.domain.level.repository.LevelRepository;
 import com.focusup.domain.routine.dto.RoutineRequestDTO;
 import com.focusup.domain.routine.dto.RoutineResponseDTO;
 import com.focusup.domain.routine.dto.UserRoutineResponseDTO;
 import com.focusup.domain.routine.repository.RoutineRepository;
 import com.focusup.domain.routine.repository.UserRoutineRepository;
-import com.focusup.entity.Routine;
-import com.focusup.entity.UserRoutine;
+import com.focusup.entity.*;
 import com.focusup.global.apiPayload.code.ErrorCode;
+import com.focusup.global.apiPayload.exception.LevelException;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,8 @@ import org.springframework.data.domain.Sort;
 public class RoutineServiceImpl implements RoutineService{
     private final RoutineRepository routineRepository;
     private final UserRoutineRepository userRoutineRepository;
+    private final LevelHistoryRepository levelHistoryRepository;
+    private final LevelRepository levelRepository;
 
     // 마이페이지 조회
     public RoutineResponseDTO.MyPage getMyPage() {
@@ -103,6 +107,20 @@ public class RoutineServiceImpl implements RoutineService{
                 .build();
         // 업데이트된 Routine 저장
         routineRepository.save(routine);
+
+        // 유저의 levelHistory의 successCount 1 증가
+        UserRoutine userRoutine = userRoutineRepository.findByRoutine(routine);
+        User user = userRoutine.getUser();
+        LevelHistory levelHistory = levelHistoryRepository.findByUserId(user.getId());
+        levelHistory.addSuccessCount();
+
+        if (levelHistory.getSuccessCount() > 5) {
+            long levelUp = levelHistory.getLevel().getLevel() + 1;
+            Level updatedlevel = levelRepository.findById(levelUp).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
+
+            levelHistory.addLevel(updatedlevel);
+            levelHistory.changeSuccessCount(0);
+        }
 
         return routineId;
     }

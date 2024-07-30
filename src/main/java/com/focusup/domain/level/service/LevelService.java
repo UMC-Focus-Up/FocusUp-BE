@@ -1,12 +1,10 @@
 package com.focusup.domain.level.service;
 
-import com.focusup.domain.level.converter.LevelHistoryConverter;
 import com.focusup.domain.level.repository.LevelHistoryRepository;
 import com.focusup.domain.level.repository.LevelRepository;
 import com.focusup.domain.user.repository.UserRepository;
 import com.focusup.entity.Level;
 import com.focusup.entity.LevelHistory;
-import com.focusup.entity.User;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.LevelException;
 import com.focusup.global.apiPayload.exception.MemberException;
