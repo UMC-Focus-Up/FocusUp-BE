@@ -37,7 +37,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
         // 종료일 설정(우선 한달
         LocalDate endDate = request.getStartDate().plusMonths(1);
         // List를 EnumSet으로 변경
-        EnumSet<DayOfWeek> repeatCyccleDays = EnumSet.copyOf(request.getRepeatCycleDay());
+        EnumSet<DayOfWeek> repeatCycleDays = EnumSet.copyOf(request.getRepeatCycleDay());
         // 유저 확인
         User user = userRepository.findById(userId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
 
@@ -45,9 +45,10 @@ public class UserRoutineServiceImpl implements UserRoutineService{
         UserRoutine userRoutine = UserRoutine.builder()
                 .user(user)
                 .name(request.getRoutineName())
-                .startDate(request.getStartDate())
                 .startTime(request.getStartTime())
                 .goalTime(request.getEndTime())
+                .startDate(request.getStartDate())
+                .repeatCycleDay(request.getRepeatCycleDay())
                 .build();
 
         // userRoutine 저장
@@ -56,13 +57,21 @@ public class UserRoutineServiceImpl implements UserRoutineService{
         // 루틴 생성을 위한 날짜 계산
         List<LocalDate> routineDates = Stream.iterate(request.getStartDate(), date -> date.plusDays(1))
                 .limit(ChronoUnit.DAYS.between(request.getStartDate(), endDate))
-                .filter(date -> repeatCyccleDays.contains(date.getDayOfWeek()))
+                .filter(date -> repeatCycleDays.contains(date.getDayOfWeek()))
                 .toList();
 
         List<Routine> routines = new ArrayList<>();
 
         // date에 따라 routine 추가
         for (LocalDate date : routineDates) {
+            LocalDateTime startDateTime = LocalDateTime.of(date, request.getStartTime());
+            LocalDateTime endDateTime = LocalDateTime.of(date, request.getEndTime());
+
+            // 시작 시간과 종료 시간 비교하여 종료 시간이 시작 시간보다 이전인 경우 하루를 추가
+            if (request.getEndTime().isBefore(request.getStartTime())) {
+                endDateTime = endDateTime.plusDays(1);
+            }
+
             routines.add(createRoutineInfo(date, userRoutine));
         }
 
@@ -111,15 +120,12 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     public UserRoutineResponseDTO.UserRoutineDetail getUserRoutineDetail(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
 
-        // 유저 루틴 DTO로 변환
-        UserRoutineResponseDTO.UserRoutineDetail userRoutineDTOs = UserRoutineResponseDTO.UserRoutineDetail.builder()
+        // List DTO로 변환
+        return UserRoutineResponseDTO.UserRoutineDetail.builder()
                 .routineName(userRoutine.getName())
                 .repeatCycleDay(userRoutine.getRepeatCycleDay())
                 .startTime(userRoutine.getStartTime())
                 .endTime(userRoutine.getGoalTime())
                 .build();
-
-        // List DTO로 변환
-        return userRoutineDTOs;
     }
 }

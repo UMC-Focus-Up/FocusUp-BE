@@ -15,8 +15,4 @@ import java.util.Optional;
 @NonNullApi
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
     Optional<Routine> findById(Long id);
-
-    // LocalDateTime startDate에서 LocalDate가 같은 것만 호출
-    @Query("SELECT r FROM Routine r WHERE DATE(r.startTime) = :date")
-    List<Routine> findByStartDate(@Param("date") LocalDate date);
 }

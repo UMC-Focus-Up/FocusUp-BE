@@ -24,18 +24,15 @@ public class UserRoutine extends BaseEntity {
     @Column(length = 30, nullable = false)
     private String name;
 
-    @ElementCollection
-    @CollectionTable(name = "user_routine_days", joinColumns = @JoinColumn(name = "user_routine_id"))
-    @Column(name = "day_of_week")
     private List<DayOfWeek> repeatCycleDay = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "startTime")
     private LocalTime startTime;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "goalTime")
     private LocalTime goalTime;
 
     @ManyToOne(fetch = FetchType.LAZY)

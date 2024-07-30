@@ -22,17 +22,10 @@ public class RoutineController {
         return Response.success(finishedRoutineId);
     }
 
-    // 루틴 전체 리스트 조회하기 GET method
-    @GetMapping("/all")
-    public Response<RoutineResponseDTO.GetAllRoutineList> getAllRoutine() {
-        RoutineResponseDTO.GetAllRoutineList response = routineService.getAllRoutineList();
-        return Response.success(response);
-    }
-
-    // 특정 일의 루틴 리스트 조회하기 GET method
-    @GetMapping("")
-    public Response<RoutineResponseDTO.GetTodayRoutineList> getTodayRoutine(@RequestParam LocalDate date) {
-        RoutineResponseDTO.GetTodayRoutineList response = routineService.getTodayRoutineList(date);
+    // 마이페이지 조회 GET method
+    @GetMapping("/mypage")
+    public Response<RoutineResponseDTO.MyPage> getMyPage() {
+        RoutineResponseDTO.MyPage response = routineService.getMyPage();
         return Response.success(response);
     }
 }

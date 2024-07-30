@@ -10,17 +10,22 @@ import java.util.List;
 
 public class RoutineResponseDTO {
 
+    // 마이페이지 조회
+    @Getter
+    @Builder
+    public static class MyPage {
+        private List<UserRoutineResponseDTO.UserRoutine> userRoutines;
+        private int level;
+        private int successCount;
+        private List<DateRoutines> routines;
+    }
+
     // 목표 루틴 리스트 조회 response DTO
     @Getter
     @Builder
-    public static class GetAllRoutineList {
-        private List<Routine> routines;
-    }
-
-    // 특정일의 루틴 리스트 조회 response DTO
-    @Getter
-    @Builder
-    public static class GetTodayRoutineList {
+    public static class DateRoutines {
+        private LocalDate date;
+        private double totalAchieveRate;
         private List<Routine> routines;
     }
 
@@ -30,7 +35,6 @@ public class RoutineResponseDTO {
     public static class Routine {
         private Long id;
         private String name;
-        private LocalDate date;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         private LocalTime targetTime;
@@ -38,6 +42,6 @@ public class RoutineResponseDTO {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         private LocalTime execTime ;
 
-        private float achieveRate ;
+        private double achieveRate ;
     }
 }
