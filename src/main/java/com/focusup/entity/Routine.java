@@ -4,11 +4,13 @@ import com.focusup.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Getter
 public class Routine extends BaseEntity {
@@ -16,12 +18,17 @@ public class Routine extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 30, nullable = false)
-    private String name;
+    @Column(nullable = false)
+    @Builder.Default
+    private LocalTime execTime = LocalTime.of(0, 0);
 
     @Column(nullable = false)
-    private LocalTime startTime;
+    @Builder.Default
+    private double achieveRate = 0;
 
-    @Column(nullable = false)
-    private LocalTime goalTime;
+    private LocalDate date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userRoutineId")
+    private UserRoutine userRoutine;
 }

@@ -1,9 +1,13 @@
 package com.focusup.domain.routine.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.focusup.domain.routine.dto.RoutineRequestDTO;
+import com.focusup.domain.routine.dto.RoutineResponseDTO;
+import java.time.LocalDate;
 
-@Service
-@RequiredArgsConstructor
-public class RoutineService {
+public interface RoutineService {
+    // 모든 루틴 리스트 조회 service
+    public RoutineResponseDTO.MyPage getMyPage();
+    // 루틴 완료 service
+    public Long finishRoutine(RoutineRequestDTO.FinishRoutine request, Long routineId);
+
 }
