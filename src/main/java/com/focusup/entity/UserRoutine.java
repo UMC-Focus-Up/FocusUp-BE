@@ -4,13 +4,16 @@ import com.focusup.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Getter
 public class UserRoutine extends BaseEntity {
@@ -18,22 +21,25 @@ public class UserRoutine extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @Column(length = 30, nullable = false)
+    private String name;
+
+    private List<DayOfWeek> repeatCycleDay = new ArrayList<>();
 
     @Column(nullable = false)
-    @Builder.Default
-    private LocalTime execTime = LocalTime.of(0, 0);
+    private LocalDate startDate;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private float achieveRate = 0;
+    @Column(nullable = false, name = "startTime")
+    private LocalTime startTime;
+
+    @Column(nullable = false, name = "goalTime")
+    private LocalTime goalTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "routine_id")
-    private Routine routine;
+    @Singular
+    @OneToMany(mappedBy = "userRoutine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Routine> routines = new ArrayList<>();
 }
