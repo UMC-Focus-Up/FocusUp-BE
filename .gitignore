@@ -8,6 +8,9 @@ build/
 ### properties, yml ###
 src/main/resources/application.properties
 
+### firebase ###
+src/main/resources/firebase/firebase_service_key.json
+
 ### STS ###
 .apt_generated
 .classpath
