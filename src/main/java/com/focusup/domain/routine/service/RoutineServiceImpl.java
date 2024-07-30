@@ -9,6 +9,7 @@ import com.focusup.domain.routine.repository.RoutineRepository;
 import com.focusup.domain.routine.repository.UserRoutineRepository;
 import com.focusup.entity.*;
 import com.focusup.global.apiPayload.code.ErrorCode;
+import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.LevelException;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
@@ -116,10 +117,15 @@ public class RoutineServiceImpl implements RoutineService{
 
         if (levelHistory.getSuccessCount() > 5) {
             long levelUp = levelHistory.getLevel().getLevel() + 1;
-            Level updatedlevel = levelRepository.findById(levelUp).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
 
-            levelHistory.addLevel(updatedlevel);
-            levelHistory.changeSuccessCount(0);
+            if (levelUp < 8) {
+                Level updatedlevel = levelRepository.findById(levelUp).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
+
+                levelHistory.addLevel(updatedlevel);
+                levelHistory.changeSuccessCount(0);
+            } else {
+                throw (new LevelException(ErrorCode.LEVEL_TOO_HIGH));
+            }
         }
 
         return routineId;
