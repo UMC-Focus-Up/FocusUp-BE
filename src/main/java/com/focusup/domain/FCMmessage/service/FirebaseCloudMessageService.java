@@ -16,6 +16,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
+
     private final String API_URL  = "https://fcm.googleapis.com/v1/projects/" +
             "focusup-7717c/messages:send";
     // FcmMessage를 Json으로 바꿈
@@ -36,7 +37,6 @@ public class FirebaseCloudMessageService {
                 .build();
 
         Response response = client.newCall(request).execute();
-
         System.out.println(response.body().string());
     }
 
