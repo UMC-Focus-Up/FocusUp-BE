@@ -68,6 +68,44 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    @Override
+    public ItemResponse.MyItemListDTO getMyItemList(Long userId) {
+        List<Item> items = orderRepository.findItemsByUserId(userId);
+        List<ItemResponse.MyItemDTO> itemList = items.stream().map(item ->
+                ItemResponse.MyItemDTO.builder()
+                        .id(item.getId())
+                        .name(item.getName())
+                        .type(item.getType())
+                        .imageUrl(item.getImageUrl())
+                        .build()
+        ).collect(Collectors.toList());
+
+        return ItemResponse.MyItemListDTO.builder()
+                .itemList(itemList)
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public void selectCharacterItem(ItemRequest.selectCharacterItemDTO request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 사용자가 존재하지 않을 경우 예외 처리
+
+        Item item = itemRepository.findById(request.getItemId())
+                .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND)); // 아이템이 존재하지 않을 경우 예외 처리
+
+        user.changeCurItem(item);
+    }
+
+    @Transactional
+    @Override
+    public void deselectCharacterItem(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 사용자가 존재하지 않을 경우 예외 처리
+
+        user.changeCurItem(null);
+    }
+
     private List<ItemResponse.StoreItemDTO> getItems(Long userId) {
         List<Item> items = itemRepository.findAll(); // 모든 아이템
 

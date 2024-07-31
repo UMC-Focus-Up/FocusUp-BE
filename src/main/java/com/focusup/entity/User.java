@@ -48,4 +48,8 @@ public class User extends BaseEntity {
     public void changePoint(int point){
         this.point = point;
     }
+
+    public void changeCurItem(Item item){
+        this.curItem = item;
+    }
 }
