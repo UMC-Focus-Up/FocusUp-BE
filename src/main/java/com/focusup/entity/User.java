@@ -85,8 +85,8 @@ public class User extends BaseEntity implements UserDetails {
     }
 
     // 필드 초기화를 위한 생성자
-    public User(String email, SocialType socialType, int life, int point, Item curItem) {
-        this.email = email;
+    public User(String oauthId, SocialType socialType, int life, int point, Item curItem) {
+        this.oauthId = oauthId;
         this.socialType = socialType;
         this.life = life;
         this.point = point;
