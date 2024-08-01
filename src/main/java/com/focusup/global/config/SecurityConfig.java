@@ -44,7 +44,7 @@ public class SecurityConfig {
 
                 // request 인증, 인가 설정
                 .authorizeHttpRequests(request -> request.
-                                requestMatchers("api/user/auth/success", "api/user/login/kakao", "login/oauth2/code/kakao", "api/user/auth/reissue").permitAll()
+                                requestMatchers("api/user/auth/**", "login/oauth2/code/**").permitAll()
                 .anyRequest().authenticated()
                 )
 

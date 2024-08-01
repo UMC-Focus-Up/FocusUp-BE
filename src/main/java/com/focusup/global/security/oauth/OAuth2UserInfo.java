@@ -17,16 +17,24 @@ public record OAuth2UserInfo(
     public static OAuth2UserInfo of(String registrationId, Map<String, Object> attributes) {
         return switch (registrationId) { // registration id별로 userInfo 생성
             case "kakao" -> ofKakao(attributes);
+            case "naver" -> ofNaver(attributes);
             default -> throw new AuthException(ILLEGAL_REGISTRATION_ID);
         };
     }
 
     private static OAuth2UserInfo ofKakao(Map<String, Object> attributes) {
-
         return OAuth2UserInfo.builder()
                 .id(String.valueOf(attributes.get("id")))
                 .socialType(SocialType.KAKAO)
                 .build();
     }
 
+    private static OAuth2UserInfo ofNaver(Map<String, Object> attributes) {
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+        return OAuth2UserInfo.builder()
+                .id(String.valueOf(response.get("id")))
+                .socialType(SocialType.NAVER)
+                .build();
+    }
 }

@@ -44,11 +44,6 @@ public class JwtTokenUtils {
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-//    @PostConstruct
-//    private void setSecretKey() {
-//        secretKey = Keys.hmacShaKeyFor(key.getBytes());
-//    }
-
     public TokenInfo generateToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)

@@ -37,8 +37,14 @@ public class UserController {
     }
 
     @GetMapping("/auth/kakao")
-    @Operation(summary = "Web 소셜 로그인 용 api")
+    @Operation(summary = "Kakao Web 소셜 로그인 용 api")
     public RedirectView kakaoLogin() {
         return new RedirectView("/oauth2/authorization/kakao");
+    }
+
+    @GetMapping("/auth/naver")
+    @Operation(summary = "Naver Web 소셜 로그인 용 api")
+    public RedirectView naverLogin() {
+        return new RedirectView("/oauth2/authorization/naver");
     }
 }
