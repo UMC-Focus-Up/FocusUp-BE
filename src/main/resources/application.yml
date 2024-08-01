@@ -14,3 +14,10 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 logging.level:
   org.hibernate.SQL: debug
+---
+spring:
+  profiles:
+    include: oauth
+---
+jwt:
+  secret: ${JWT_SECRET}
