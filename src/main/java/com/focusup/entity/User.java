@@ -40,9 +40,10 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     @Builder.Default
     private int point = 0;
-
-    @Column
-    private String curItem;
+  
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item curItem;
 
     public void setRefreshToken(String refreshToken){
         this.refreshToken = refreshToken;
@@ -81,5 +82,22 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    // 필드 초기화를 위한 생성자
+    public User(String email, SocialType socialType, int life, int point, Item curItem) {
+        this.email = email;
+        this.socialType = socialType;
+        this.life = life;
+        this.point = point;
+        this.curItem = curItem;
+    }
+
+    public void changePoint(int point){
+        this.point = point;
+    }
+
+    public void changeCurItem(Item item){
+        this.curItem = item;
     }
 }
