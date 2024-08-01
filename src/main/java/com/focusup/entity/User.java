@@ -1,28 +1,37 @@
 package com.focusup.entity;
 
 import com.focusup.entity.base.BaseEntity;
+import com.focusup.entity.enums.Role;
 import com.focusup.entity.enums.SocialType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Entity
 @Getter
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 20, nullable = false, unique = true)
-    private String email;
-
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(nullable = false)
+    private String oauthId;
+
     @Column
-    private String accessToken;
+    private String refreshToken;
 
     @Column(nullable = false)
     @Builder.Default
@@ -34,4 +43,43 @@ public class User extends BaseEntity {
 
     @Column
     private String curItem;
+
+    public void setRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(role);
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return oauthId;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
