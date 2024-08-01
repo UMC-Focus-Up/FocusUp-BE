@@ -4,6 +4,8 @@ import com.focusup.domain.user.dto.LoginResponse;
 import com.focusup.domain.user.dto.RefreshTokenRequest;
 import com.focusup.domain.user.service.UserServiceImpl;
 import com.focusup.global.apiPayload.Response;
+import com.focusup.global.apiPayload.code.ErrorCode;
+import com.focusup.global.apiPayload.exception.TokenException;
 import com.focusup.global.handler.annotation.Auth;
 import com.focusup.global.security.jwt.TokenInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 public class UserController {
 
     private final UserServiceImpl userServiceImpl;
+
 
     @GetMapping("/test")
     public Response<String> test(@Auth String oauthId) {

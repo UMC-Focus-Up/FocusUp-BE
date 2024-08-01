@@ -7,7 +7,6 @@ import com.focusup.global.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -20,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
@@ -30,14 +28,12 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
         return web -> web.ignoring()
                 .requestMatchers("/css/**", "/images/**", "/js/**", "/lib/**")
-                .requestMatchers("/swagger-ui/**", "/api-docs/**")
+                .requestMatchers("/", "/swagger-ui-custom.html", "/api-docs/**", "/swagger-ui/**", "swagger-ui.html", "/v3/api-docs/**")
                 .requestMatchers("/error", "/favicon.ico");
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // rest api 설정
                 .csrf(AbstractHttpConfigurer::disable) // csrf 비활성화
                 .sessionManagement(c ->
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용하지 않음
@@ -45,7 +41,7 @@ public class SecurityConfig {
                 // request 인증, 인가 설정
                 .authorizeHttpRequests(request -> request.
                                 requestMatchers("api/user/auth/**", "login/oauth2/code/**").permitAll()
-                .anyRequest().authenticated()
+                            .anyRequest().authenticated()
                 )
 
                 // oauth2 설정

@@ -86,7 +86,7 @@ public class JwtTokenUtils {
             throw new TokenException(INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
-            return e.getClaims(); //??
+            throw new TokenException(INVALID_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
             throw new TokenException(INVALID_TOKEN);

@@ -4,7 +4,6 @@ package com.focusup.global.handler.resolver;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.AuthException;
 import com.focusup.global.handler.annotation.Auth;
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
