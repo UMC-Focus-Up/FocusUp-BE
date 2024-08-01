@@ -31,7 +31,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             processTokenAuthentication(request);
         } catch (TokenException e) {
             log.error("Invalid Token", e);
-            return;
+            throw e;
         }
         filterChain.doFilter(request, response);
     }

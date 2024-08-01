@@ -2,6 +2,7 @@ package com.focusup.global.config;
 
 import com.focusup.global.security.jwt.JwtTokenFilter;
 import com.focusup.global.security.jwt.JwtTokenUtils;
+import com.focusup.global.security.jwt.TokenExceptionFilter;
 import com.focusup.global.security.oauth.CustomOAuth2UserService;
 import com.focusup.global.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,8 @@ public class SecurityConfig {
                 )
 
                 // jwt 관련 설정
-                .addFilterBefore(new JwtTokenFilter(jwtTokenUtils), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtTokenFilter(jwtTokenUtils), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new TokenExceptionFilter(), JwtTokenFilter.class); // 토큰 예외 핸들링
 
         return http.build();
     }
