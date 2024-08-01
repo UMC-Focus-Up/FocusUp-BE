@@ -4,6 +4,7 @@ import com.focusup.domain.user.dto.LoginResponse;
 import com.focusup.domain.user.dto.RefreshTokenRequest;
 import com.focusup.domain.user.service.UserServiceImpl;
 import com.focusup.global.apiPayload.Response;
+import com.focusup.global.handler.annotation.Auth;
 import com.focusup.global.security.jwt.TokenInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -20,12 +21,13 @@ public class UserController {
     private final UserServiceImpl userServiceImpl;
 
     @GetMapping("/test")
-    public Response<String> test(Authentication authentication) {
-        return Response.success(authentication.getName());
+    public Response<String> test(@Auth String oauthId) {
+        // Service: User user = userRepository.findByOauthId(oauthId);
+        return Response.success(oauthId);
     }
 
     @GetMapping("/auth/success")
-    @Operation(summary = "로그인 성공 후 토큰 전송, 내부 api, 클라이언트 사용 X")
+    @Operation(summary = "로그인 성공 후 토큰 응답 api, 응답 형태 확인용")
     public Response<LoginResponse> loginSuccess(@Valid LoginResponse loginResponse) {
         return Response.success(loginResponse);
     }
