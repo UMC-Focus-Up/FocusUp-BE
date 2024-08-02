@@ -22,13 +22,6 @@ public class UserController {
 
     private final UserServiceImpl userServiceImpl;
 
-
-    @GetMapping("/test")
-    public Response<String> test(@Auth String oauthId) {
-        // Service: User user = userRepository.findByOauthId(oauthId);
-        return Response.success(oauthId);
-    }
-
     @GetMapping("/auth/success")
     @Operation(summary = "로그인 성공 후 토큰 응답 api, 응답 형태 확인용")
     public Response<LoginResponse> loginSuccess(@Valid LoginResponse loginResponse) {
