@@ -28,7 +28,14 @@ public class Routine extends BaseEntity {
 
     private LocalDate date;
 
+    @Builder.Default
+    private int delayCount = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userRoutineId")
     private UserRoutine userRoutine;
+
+    public void changeDelayCount(int count) {
+        this.delayCount += count;
+    }
 }

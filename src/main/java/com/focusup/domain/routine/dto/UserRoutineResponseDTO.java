@@ -31,6 +31,7 @@ public class UserRoutineResponseDTO {
     @Getter
     @Builder
     public static class SpecRoutine {
+        private Long id;
         private LocalDate date;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")

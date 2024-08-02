@@ -113,8 +113,6 @@ public class UserRoutineServiceImpl implements UserRoutineService{
                         .build())
                 .collect(Collectors.toList());
 
-
-
         // List DTO로 변환
         return UserRoutineResponseDTO.GetAllUserRoutineList.builder().routines(userRoutineDTOs).build();
     }
@@ -126,6 +124,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
 
         List<UserRoutineResponseDTO.SpecRoutine> specRoutines = routines.stream()
                 .map(r -> UserRoutineResponseDTO.SpecRoutine.builder()
+                        .id(r.getId())
                         .date(r.getDate())
                         .startTime(userRoutine.getStartTime())
                         .build())
