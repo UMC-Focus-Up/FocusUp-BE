@@ -109,11 +109,29 @@ public class UserRoutineServiceImpl implements UserRoutineService{
                 .map(ur -> UserRoutineResponseDTO.UserRoutine.builder()
                         .id(ur.getId())
                         .name(ur.getName())
+                        .specRoutine(getSpecRoutine(ur.getId()))
                         .build())
                 .collect(Collectors.toList());
 
+
+
         // List DTO로 변환
         return UserRoutineResponseDTO.GetAllUserRoutineList.builder().routines(userRoutineDTOs).build();
+    }
+
+    // 유저 루틴 아이디를 통해 루틴 상제 정보 조회 service
+    public List<UserRoutineResponseDTO.SpecRoutine> getSpecRoutine(Long userRoutineId) {
+        UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+        List<Routine> routines = userRoutine.getRoutines();
+
+        List<UserRoutineResponseDTO.SpecRoutine> specRoutines = routines.stream()
+                .map(r -> UserRoutineResponseDTO.SpecRoutine.builder()
+                        .date(r.getDate())
+                        .startTime(userRoutine.getStartTime())
+                        .build())
+                .collect(Collectors.toList());
+
+        return specRoutines;
     }
 
     // 유저 루틴 상세 정보 조회 service
