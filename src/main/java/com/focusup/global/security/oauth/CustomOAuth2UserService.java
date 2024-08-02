@@ -1,9 +1,15 @@
 package com.focusup.global.security.oauth;
 
+import com.focusup.domain.level.repository.LevelHistoryRepository;
+import com.focusup.domain.level.repository.LevelRepository;
 import com.focusup.domain.user.repository.UserRepository;
+import com.focusup.entity.Level;
+import com.focusup.entity.LevelHistory;
 import com.focusup.entity.User;
 import com.focusup.entity.enums.Role;
 import com.focusup.global.apiPayload.code.ErrorCode;
+import com.focusup.global.apiPayload.exception.CustomException;
+import com.focusup.global.apiPayload.exception.RoutineException;
 import com.focusup.global.apiPayload.exception.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -25,6 +31,8 @@ import java.util.Map;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final LevelRepository levelRepository;
+    private final LevelHistoryRepository levelHistoryRepository;
 
     @Transactional
     @Override
@@ -56,13 +64,24 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String oauthId = oAuth2UserInfo.socialType() + "_" +  oAuth2UserInfo.id();
         User user = userRepository.findByOauthId(oauthId).orElse(null);
 
-        if (user == null) {
+        if (user == null) { // 새로운 유저
             user = User.builder()
                     .oauthId(oauthId)
                     .socialType(oAuth2UserInfo.socialType())
                     .role(Role.USER)
                     .build();
             user = userRepository.save(user);
+
+            Level initLevel = levelRepository.findById(Long.valueOf(1))
+                    .orElseThrow(() -> new CustomException(ErrorCode.LEVEL_NOT_FOUND));
+
+            LevelHistory initLevelHistory = LevelHistory.builder()
+                    .user(user)
+                    .level(initLevel)
+                    .newLevel(initLevel)
+                    .build();
+
+            levelHistoryRepository.save(initLevelHistory);
         }
         return user;
     }
