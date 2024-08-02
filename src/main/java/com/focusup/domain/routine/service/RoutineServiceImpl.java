@@ -110,7 +110,8 @@ public class RoutineServiceImpl implements RoutineService{
         routineRepository.save(routine);
 
         // 유저의 levelHistory의 successCount 1 증가
-        UserRoutine userRoutine = userRoutineRepository.findByRoutine(routine);
+        List<UserRoutine> userRoutines = userRoutineRepository.findByRoutines(routine);
+        UserRoutine userRoutine = userRoutines.get(0);
         User user = userRoutine.getUser();
         LevelHistory levelHistory = levelHistoryRepository.findByUserId(user.getId());
         levelHistory.addSuccessCount();
@@ -120,9 +121,9 @@ public class RoutineServiceImpl implements RoutineService{
 
             if (levelUp < 8) {
                 Level updatedlevel = levelRepository.findById(levelUp).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
-
                 levelHistory.addLevel(updatedlevel);
                 levelHistory.changeSuccessCount(0);
+                
             } else {
                 throw (new LevelException(ErrorCode.LEVEL_TOO_HIGH));
             }
@@ -130,5 +131,4 @@ public class RoutineServiceImpl implements RoutineService{
 
         return routineId;
     }
-
 }

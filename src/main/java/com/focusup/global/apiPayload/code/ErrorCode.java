@@ -29,7 +29,10 @@ public enum ErrorCode {
   
     // Level 에러
     LEVEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레벨입니다."),
-    LEVEL_TOO_HIGH(HttpStatus.BAD_REQUEST, "최고 레벨은 7레벨이며 그 이상으로는 올라갈 수 없습니다.");
+    LEVEL_TOO_HIGH(HttpStatus.BAD_REQUEST, "최고 레벨은 7레벨이며 그 이상으로는 올라갈 수 없습니다."),
+
+    // Alarm 에러
+    ALARM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 알람입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -34,10 +34,6 @@ dependencies {
 
 	// swagger 설정
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-
-	// firebase 설정
-	implementation 'com.google.firebase:firebase-admin:6.8.1'
-	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.2.2'
 }
 
 tasks.named('test') {
