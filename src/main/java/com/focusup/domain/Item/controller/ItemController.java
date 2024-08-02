@@ -31,4 +31,24 @@ public class ItemController {
                 .point(point)
                 .build());
     }
+    @GetMapping("/myitem")
+    @Operation(summary = "내 아이템 목록 조회 API")
+    public Response<ItemResponse.MyItemListDTO> getMyItemList(@RequestParam Long userId){
+        ItemResponse.MyItemListDTO itemList = itemService.getMyItemList(userId);
+        return Response.success(itemList);
+    }
+
+    @PostMapping("/select")
+    @Operation(summary = "캐릭터 아이템 선택 API")
+    public Response<?> selectCharacterItem(@RequestBody ItemRequest.selectCharacterItemDTO request){
+        itemService.selectCharacterItem(request);
+        return Response.success("정상적으로 아이템을 장착하였습니다.");
+    }
+
+    @PostMapping("/deselect")
+    @Operation(summary = "캐릭터 아이템 삭제(해제) API")
+    public Response<?> deselectCharacterItem(@RequestBody ItemRequest.deselectCharacterItemDTO request) {
+        itemService.deselectCharacterItem(request.getUserId());
+        return Response.success("정상적으로 아이템을 삭제하였습니다.");
+    }
 }

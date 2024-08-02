@@ -30,4 +30,19 @@ public class ItemResponse {
     public static class PurchaseDTO {
         int point;
     }
+
+    @Builder
+    @Getter
+    public static class MyItemListDTO {
+        List<MyItemDTO> itemList;
+    }
+
+    @Builder
+    @Getter
+    public static class MyItemDTO {
+        Long id;
+        String name;
+        String type;
+        String imageUrl;
+    }
 }
