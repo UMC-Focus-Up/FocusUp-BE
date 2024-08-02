@@ -8,6 +8,7 @@ build/
 ### properties, yml ###
 src/main/resources/application.properties
 application-oauth.yml
+application.yml
 
 ### STS ###
 .apt_generated
