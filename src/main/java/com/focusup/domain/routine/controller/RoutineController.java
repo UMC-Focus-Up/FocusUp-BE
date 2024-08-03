@@ -25,8 +25,8 @@ public class RoutineController {
 
     // 마이페이지 조회 GET method
     @GetMapping("/mypage")
-    public Response<RoutineResponseDTO.MyPage> getMyPage() {
-        RoutineResponseDTO.MyPage response = routineService.getMyPage();
+    public Response<RoutineResponseDTO.MyPage> getMyPage(@Auth String oauthId) {
+        RoutineResponseDTO.MyPage response = routineService.getMyPage(oauthId);
         return Response.success(response);
     }
 }

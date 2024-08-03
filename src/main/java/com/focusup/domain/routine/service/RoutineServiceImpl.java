@@ -32,7 +32,10 @@ public class RoutineServiceImpl implements RoutineService{
     private final UserRepository userRepository;
 
     // 마이페이지 조회
-    public RoutineResponseDTO.MyPage getMyPage() {
+    public RoutineResponseDTO.MyPage getMyPage(String oauthId) {
+        // 유저 확인
+        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
+
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "startDate"));
         List<UserRoutine> userRoutines = userRoutineRepository.findAll(pageable).getContent();
 
@@ -51,24 +54,33 @@ public class RoutineServiceImpl implements RoutineService{
                 .map(entry -> convertToDateRoutinesDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
 
+        System.out.println("Step3 ==============");
 
         return RoutineResponseDTO.MyPage.builder()
                 .userRoutines(userRoutineDTOs)
-                .level(1) // levelHistory를 userId로 조회
-                .successCount(10) // levelHistory를 userId로 조회
+                .level(levelHistoryRepository.findByUser(user).getLevel().getLevel()) // levelHistory를 userId로 조회
+                .successCount(levelHistoryRepository.findByUser(user).getSuccessCount()) // levelHistory를 userId로 조회
                 .routines(dateRoutineDTOs)
                 .build();
     }
 
     // routineList를 DateRoutinesDTO로 변환
     private RoutineResponseDTO.DateRoutines convertToDateRoutinesDTO(LocalDate date, List<Routine> routines) {
-        List<RoutineResponseDTO.Routine> routineDTOs = routines.stream()
-                .map(this::convertToRoutineDTO)
-                .collect(Collectors.toList());
-        double totalAchieveRate = routineDTOs.stream()
-                .mapToDouble(RoutineResponseDTO.Routine::getAchieveRate)
+        double totalAchieveRate = routines.stream()
+                .mapToDouble(Routine::getAchieveRate)
                 .average()
                 .orElse(0.0);
+
+        List<RoutineResponseDTO.Routine> routineDTOs = routines.stream()
+                .map(routine -> RoutineResponseDTO.Routine.builder()
+                        .id(routine.getId())
+                        .name(routine.getUserRoutine().getName()) // Assuming UserRoutine has a name
+                        .targetTime(routine.getUserRoutine().getGoalTime()) // Assuming UserRoutine has a targetTime
+                        .execTime(routine.getExecTime())
+                        .achieveRate(routine.getAchieveRate())
+                        .build())
+                .collect(Collectors.toList());
+
         return RoutineResponseDTO.DateRoutines.builder()
                 .date(date)
                 .totalAchieveRate(totalAchieveRate)
