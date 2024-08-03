@@ -9,7 +9,6 @@ import com.focusup.global.handler.annotation.Auth;
 import com.focusup.global.security.jwt.TokenInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import com.focusup.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -36,6 +35,25 @@ public class UserController {
         return Response.success(userService.refreshAccessToken(request.getRefreshToken()));
     }
 
+    @DeleteMapping("/withdraw")
+    @Operation(summary = "회원 탈퇴 api")
+    public Response<Void> withdraw(@Auth String oauthId) {
+        userService.withdraw(oauthId);
+        return Response.success();
+    }
+
+    @GetMapping("/home")
+    @Operation(summary = "홈 조회 api")
+    public Response<?> getHomeInfo(@Auth String oauthId){
+        return Response.success(userService.getHomeInfo(oauthId));
+    }
+
+    @GetMapping("/character")
+    @Operation(summary = "캐릭터 화면 조회")
+    public Response<?> getCharacterPageInfo(@Auth String oauthId){
+        return Response.success(userService.getCharacterPageInfo(oauthId));
+    }
+
     @GetMapping("/auth/success")
     @Operation(summary = "로그인 성공 후 토큰 응답 api, 백엔드용")
     public Response<LoginResponse> loginSuccess(@Valid LoginResponse loginResponse) {
@@ -52,17 +70,5 @@ public class UserController {
     @Operation(summary = "Naver Web 소셜 로그인 용 api, 백엔드용")
     public RedirectView naverLogin() {
         return new RedirectView("/oauth2/authorization/naver");
-    }
-
-    @GetMapping("/home")
-    @Operation(summary = "홈 조회 api")
-    public Response<?> getHomeInfo(@Auth String oauthId){
-        return Response.success(userService.getHomeInfo(oauthId));
-    }
-
-    @GetMapping("/character")
-    @Operation(summary = "캐릭터 화면 조회")
-    public Response<?> getCharacterPageInfo(@Auth String oauthId){
-        return Response.success(userService.getCharacterPageInfo(oauthId));
     }
 }

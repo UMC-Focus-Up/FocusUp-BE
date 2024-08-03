@@ -1,7 +1,9 @@
 package com.focusup.domain.user.service;
 
+import com.focusup.domain.Item.repository.OrderRepository;
 import com.focusup.domain.level.repository.LevelHistoryRepository;
 import com.focusup.domain.level.repository.LevelRepository;
+import com.focusup.domain.routine.repository.RoutineRepository;
 import com.focusup.domain.user.dto.LoginRequest;
 import com.focusup.domain.user.dto.LoginResponse;
 import com.focusup.domain.routine.repository.UserRoutineRepository;
@@ -46,6 +48,8 @@ public class UserServiceImpl implements UserService{
     private final LevelHistoryRepository levelHistoryRepository;
     private final LevelRepository levelRepository;
     private final UserRoutineRepository userRoutineRepository;
+    private final OrderRepository orderRepository;
+    private final RoutineRepository routineRepository;
     private final JwtTokenUtils jwtTokenUtils;
     private final KakaoClient kakaoClient;
     private final NaverClient naverClient;
@@ -90,6 +94,22 @@ public class UserServiceImpl implements UserService{
         user.setRefreshToken(tokenInfo.getRefreshToken());
 
         return new LoginResponse(tokenInfo.getAccessToken(), tokenInfo.getRefreshToken());
+    }
+
+    @Transactional
+    @Override
+    public void withdraw(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 관련 엔티티 삭제
+        levelHistoryRepository.deleteByUserId(user.getId());
+        orderRepository.deleteByUserId(user.getId());
+        routineRepository.deleteRoutinesByUserId(user.getId());
+        userRoutineRepository.deleteByUserId(user.getId());
+
+        // 사용자 삭제
+        userRepository.deleteUserById(user.getId());
     }
 
 
