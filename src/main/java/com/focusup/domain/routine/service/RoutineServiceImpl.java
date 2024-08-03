@@ -113,7 +113,7 @@ public class RoutineServiceImpl implements RoutineService{
         List<UserRoutine> userRoutines = userRoutineRepository.findByRoutines(routine);
         UserRoutine userRoutine = userRoutines.get(0);
         User user = userRoutine.getUser();
-        LevelHistory levelHistory = levelHistoryRepository.findByUserId(user.getId());
+        LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
         levelHistory.addSuccessCount();
 
         if (levelHistory.getSuccessCount() > 5) {

@@ -20,8 +20,8 @@ public class AlarmServiceImpl implements AlarmService {
 
     // 반복 루틴 알림 시, 사용자 알림 옵션 선택
     @Transactional
-    public AlarmResponse.AlarmResponseDto postAlarmOption(Long routineId, Long userId, int option) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new MemberException(ErrorCode.USER_NOT_FOUND));
+    public AlarmResponse.AlarmResponseDto postAlarmOption(Long routineId, String oauthId, int option) {
+        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
         Routine routine = routineRepository.findById(routineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
 
         switch (option) {
