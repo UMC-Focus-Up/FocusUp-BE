@@ -9,6 +9,8 @@ import com.focusup.domain.user.dto.UserResponse;
 import com.focusup.domain.user.repository.UserRepository;
 import com.focusup.entity.*;
 
+import com.focusup.entity.enums.Role;
+import com.focusup.entity.enums.SocialType;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.TokenException;
