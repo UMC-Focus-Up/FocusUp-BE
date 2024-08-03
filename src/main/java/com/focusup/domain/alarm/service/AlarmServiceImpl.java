@@ -28,6 +28,7 @@ public class AlarmServiceImpl implements AlarmService {
             // 바로 루틴 실행
             case 0:
                 user.addPoint(30);
+                break;
             // 루틴 미루기
             case 1:
                 // 현재 미루기 7번 이하, 유저의 포인트가 5 이상 남아야 미루기 가능
@@ -39,6 +40,7 @@ public class AlarmServiceImpl implements AlarmService {
                 } else {
                     throw (new MemberException(ErrorCode.INSUFFICIENT_BALANCE));
                 }
+                break;
             // 루틴 포기
             case 2:
                 if (user.getLife() > 0) {
@@ -46,6 +48,9 @@ public class AlarmServiceImpl implements AlarmService {
                 } else {
                     throw (new MemberException(ErrorCode.INSUFFICIENT_LIFE));
                 }
+                break;
+            default:
+                break;
         }
 
         return AlarmResponse.AlarmResponseDto.builder()
