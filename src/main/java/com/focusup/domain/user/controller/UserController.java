@@ -4,22 +4,24 @@ import com.focusup.domain.user.dto.LoginResponse;
 import com.focusup.domain.user.dto.RefreshTokenRequest;
 import com.focusup.domain.user.service.UserServiceImpl;
 import com.focusup.global.apiPayload.Response;
-import com.focusup.global.apiPayload.code.ErrorCode;
-import com.focusup.global.apiPayload.exception.TokenException;
 import com.focusup.global.handler.annotation.Auth;
 import com.focusup.global.security.jwt.TokenInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import com.focusup.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
 
+    private final UserService userService;
     private final UserServiceImpl userServiceImpl;
 
     @GetMapping("/auth/success")
@@ -44,5 +46,17 @@ public class UserController {
     @Operation(summary = "Naver Web 소셜 로그인 용 api")
     public RedirectView naverLogin() {
         return new RedirectView("/oauth2/authorization/naver");
+    }
+
+    @GetMapping("/home")
+    @Operation(summary = "홈 조회 api")
+    public Response<?> getHomeInfo(@Auth String oauthId){
+        return Response.success(userService.getHomeInfo(oauthId));
+    }
+
+    @GetMapping("/character")
+    @Operation(summary = "캐릭터 화면 조회")
+    public Response<?> getCharacterPageInfo(@Auth String oauthId){
+        return Response.success(userService.getCharacterPageInfo(oauthId));
     }
 }
