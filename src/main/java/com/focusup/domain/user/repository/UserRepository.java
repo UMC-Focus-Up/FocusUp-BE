@@ -13,6 +13,10 @@ import java.util.Optional;
 @Repository
 @NonNullApi
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByRefreshToken(String refreshToken);
+
+    Optional<User> findByOauthId(String oauthId);
+
     Optional<User> findById(Long id);
 
     @Query("SELECT u.point FROM User u WHERE u.id = :userId")

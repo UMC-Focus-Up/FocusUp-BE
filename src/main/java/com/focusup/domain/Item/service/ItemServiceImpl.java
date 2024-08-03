@@ -26,17 +26,17 @@ public class ItemServiceImpl implements ItemService {
     private final OrderRepository orderRepository;
 
     @Override
-    public ItemResponse.StoreInfoDTO getStoreInfo(Long userId) {
+    public ItemResponse.StoreInfoDTO getStoreInfo(String oauthId) {
 
         // 사용자 조회
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 사용자 존재하지 않을 경우 예외 처리
 
         // 사용자 포인트 조회
         int point = user.getPoint();
 
         // 상점 아이템 조회
-        List<ItemResponse.StoreItemDTO> items = getItems(userId);
+        List<ItemResponse.StoreItemDTO> items = getItems(oauthId);
 
         return ItemResponse.StoreInfoDTO.builder()
                 .point(point)
@@ -46,8 +46,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public int purchaseItem(ItemRequest.PurchaseDTO purchaseDTO) {
-        User user = userRepository.findById(purchaseDTO.getMemberId())
+    public int purchaseItem(String oauthId, ItemRequest.PurchaseDTO purchaseDTO) {
+        User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 사용자가 존재하지 않을 경우 예외 처리
         int userPoint = user.getPoint();
         Item item = itemRepository.findById(purchaseDTO.getItemId())
@@ -69,8 +69,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemResponse.MyItemListDTO getMyItemList(Long userId) {
-        List<Item> items = orderRepository.findItemsByUserId(userId);
+    public ItemResponse.MyItemListDTO getMyItemList(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        List<Item> items = orderRepository.findItemsByUserId(user.getId());
         List<ItemResponse.MyItemDTO> itemList = items.stream().map(item ->
                 ItemResponse.MyItemDTO.builder()
                         .id(item.getId())
@@ -87,8 +90,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public void selectCharacterItem(ItemRequest.selectCharacterItemDTO request) {
-        User user = userRepository.findById(request.getUserId())
+    public void selectCharacterItem(String oauthId, ItemRequest.selectCharacterItemDTO request) {
+        User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 사용자가 존재하지 않을 경우 예외 처리
 
         Item item = itemRepository.findById(request.getItemId())
@@ -99,17 +102,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public void deselectCharacterItem(Long userId) {
-        User user = userRepository.findById(userId)
+    public void deselectCharacterItem(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 사용자가 존재하지 않을 경우 예외 처리
 
         user.changeCurItem(null);
     }
 
-    private List<ItemResponse.StoreItemDTO> getItems(Long userId) {
+    private List<ItemResponse.StoreItemDTO> getItems(String oauthId) {
         List<Item> items = itemRepository.findAll(); // 모든 아이템
 
-        List<Long> purchasedItemIds = orderRepository.findItemIdsByUserId(userId); // 사용자가 구매한 아이템 목록
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<Long> purchasedItemIds = orderRepository.findItemIdsByUserId(user.getId()); // 사용자가 구매한 아이템 목록
 
         // 구매 여부 포함한 정보 반환
         return items.stream().map(item ->
