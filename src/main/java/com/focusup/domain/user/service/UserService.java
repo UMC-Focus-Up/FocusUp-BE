@@ -4,7 +4,7 @@ import com.focusup.domain.user.dto.UserResponse;
 import com.focusup.global.security.jwt.TokenInfo;
 
 public interface UserService {
-    public TokenInfo refreshAccessToken(String refreshToken);
-    public UserResponse.homeInfoDTO getHomeInfo(Long userId);
-    public UserResponse.characterPageInfoDTO getCharacterPageInfo(Long userId);
+    TokenInfo refreshAccessToken(String refreshToken);
+    UserResponse.homeInfoDTO getHomeInfo(String oauthId);
+    UserResponse.characterPageInfoDTO getCharacterPageInfo(String oauthId);
 }

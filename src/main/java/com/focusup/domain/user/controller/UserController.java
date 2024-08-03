@@ -4,6 +4,7 @@ import com.focusup.domain.user.dto.LoginResponse;
 import com.focusup.domain.user.dto.RefreshTokenRequest;
 import com.focusup.domain.user.service.UserServiceImpl;
 import com.focusup.global.apiPayload.Response;
+import com.focusup.global.handler.annotation.Auth;
 import com.focusup.global.security.jwt.TokenInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -50,13 +50,13 @@ public class UserController {
 
     @GetMapping("/home")
     @Operation(summary = "홈 조회 api")
-    public Response<?> getHomeInfo(@RequestParam Long userId){
-        return Response.success(userService.getHomeInfo(userId));
+    public Response<?> getHomeInfo(@Auth String oauthId){
+        return Response.success(userService.getHomeInfo(oauthId));
     }
 
     @GetMapping("/character")
     @Operation(summary = "캐릭터 화면 조회")
-    public Response<?> getCharacterPageInfo(@RequestParam Long userId){
-        return Response.success(userService.getCharacterPageInfo(userId));
+    public Response<?> getCharacterPageInfo(@Auth String oauthId){
+        return Response.success(userService.getCharacterPageInfo(oauthId));
     }
 }

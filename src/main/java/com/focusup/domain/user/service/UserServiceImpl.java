@@ -49,11 +49,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserResponse.homeInfoDTO getHomeInfo(Long userId) {
-        User user = userRepository.findById(userId)
+    public UserResponse.homeInfoDTO getHomeInfo(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
 
-        LevelHistory levelHistory = levelHistoryRepository.findByUserId(userId);
+        LevelHistory levelHistory = levelHistoryRepository.findByUserId(user.getId());
         Level level = levelHistory.getLevel(); // 유저의 레벨 조회
 
         List<UserRoutine> userRoutines = userRoutineRepository.findByUser(user); // 유저의 루틴 목록 조회
@@ -108,8 +108,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserResponse.characterPageInfoDTO getCharacterPageInfo(Long userId) {
-        User user = userRepository.findById(userId)
+    public UserResponse.characterPageInfoDTO getCharacterPageInfo(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
 
 
