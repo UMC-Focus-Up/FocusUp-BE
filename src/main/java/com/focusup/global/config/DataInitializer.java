@@ -47,7 +47,7 @@ public class DataInitializer {
 
         // 더미 유저 + levelHistory 생성
         if(userRepository.count() == 0) {
-            userRepository.save(new User("user@naver.com", SocialType.NAVER, 5, 400, null));
+            userRepository.save(new User("naver_111" ,SocialType.NAVER, 5, 400, null));
             // 현재 레벨 1, 새로운 레벨 1로 설정 (임시)
             levelHistoryRepository.save(new LevelHistory(levelRepository.findById(Long.valueOf(1)).get(), levelRepository.findById(Long.valueOf(1)).get(), userRepository.findById(Long.valueOf(1)).get()));
         }

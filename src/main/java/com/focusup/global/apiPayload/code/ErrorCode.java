@@ -20,15 +20,19 @@ public enum ErrorCode {
 
     // User 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
+    ILLEGAL_REGISTRATION_ID(HttpStatus.UNAUTHORIZED, "유효하지 않은 등록 아이디입니다."),
+    UNSUPPORTED_SOCIAL_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE,"지원하지 않는 소셜 로그인 입니다."),
 
     // Routine 에러
     ROUTINE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 루틴입니다."),
+  
     // Item 에러
     INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "포인트가 부족합니다."),
     ITEM_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 아이템입니다."),
 
     // Level 에러
     LEVEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레벨입니다.");
+
 
     private final HttpStatus httpStatus;
     private final String message;

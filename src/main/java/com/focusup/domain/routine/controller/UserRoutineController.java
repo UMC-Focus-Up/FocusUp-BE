@@ -4,6 +4,7 @@ import com.focusup.domain.routine.dto.UserRoutineRequestDTO;
 import com.focusup.domain.routine.dto.UserRoutineResponseDTO;
 import com.focusup.domain.routine.service.UserRoutineServiceImpl;
 import com.focusup.global.apiPayload.Response;
+import com.focusup.global.handler.annotation.Auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +16,8 @@ public class UserRoutineController {
 
     // 유저 루틴 생성하기 POST method - 나중에 userId 삭제 필요
     @PostMapping("/create")
-    public Response<Long> createRoutine(@RequestBody UserRoutineRequestDTO.CreateRoutine request, @RequestParam Long userId) {
-        Long newUserRoutineId = userRoutineService.createUserRoutine(request, userId); // 임시 userId
+    public Response<Long> createRoutine(@RequestBody UserRoutineRequestDTO.CreateRoutine request, @Auth String oauthId) {
+        Long newUserRoutineId = userRoutineService.createUserRoutine(request, oauthId);
         return Response.success(newUserRoutineId);
     }
 
