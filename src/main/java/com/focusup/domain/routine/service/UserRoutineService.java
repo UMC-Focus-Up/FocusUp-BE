@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface UserRoutineService {
-    public Long createUserRoutine(UserRoutineRequestDTO.CreateRoutine request, Long userId);
+    public Long createUserRoutine(UserRoutineRequestDTO.CreateRoutine request, String oauthId);
 
     public Routine createRoutineInfo(LocalDate date, UserRoutine userRoutine);
 

@@ -33,13 +33,13 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     private final UserRepository userRepository;
 
     // 유저 루틴 생성 service
-    public Long createUserRoutine(UserRoutineRequestDTO.CreateRoutine request, Long userId) {
+    public Long createUserRoutine(UserRoutineRequestDTO.CreateRoutine request, String oauthId) {
         // 종료일 설정(우선 한달
         LocalDate endDate = request.getStartDate().plusMonths(1);
         // List를 EnumSet으로 변경
         EnumSet<DayOfWeek> repeatCycleDays = EnumSet.copyOf(request.getRepeatCycleDay());
         // 유저 확인
-        User user = userRepository.findById(userId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
 
         // user routine 먼저 생성
         UserRoutine userRoutine = UserRoutine.builder()

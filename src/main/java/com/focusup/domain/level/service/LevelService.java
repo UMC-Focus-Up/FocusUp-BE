@@ -29,16 +29,16 @@ public class LevelService {
     private final LevelHistoryRepository levelHistoryRepository;
 
     @Transactional
-    public LevelHistory findLevel (@PathVariable("userId") Long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new MemberException(ErrorCode.USER_NOT_FOUND));
-        LevelHistory levelHistory = levelHistoryRepository.findByUserId(userId);
+    public LevelHistory findLevel (String oauthId) {
+        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new MemberException(ErrorCode.USER_NOT_FOUND));
+        LevelHistory levelHistory = levelHistoryRepository.findByUserId(user.getId());
 
         return levelHistory;
     }
 
     @Transactional
-    public LevelHistory updateLevel(Long userId, Long newLevel) {
-        LevelHistory levelHistory = findLevel(userId);
+    public LevelHistory updateLevel(String oauthId, Long newLevel) {
+        LevelHistory levelHistory = findLevel(oauthId);
         Level level = levelRepository.findById(newLevel).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
         levelHistory.changeLevel(level);
 
