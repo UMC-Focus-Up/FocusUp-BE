@@ -1,6 +1,5 @@
 package com.focusup.domain.level.service;
 
-import com.focusup.domain.level.converter.LevelHistoryConverter;
 import com.focusup.domain.level.repository.LevelHistoryRepository;
 import com.focusup.domain.level.repository.LevelRepository;
 import com.focusup.domain.user.repository.UserRepository;
@@ -10,19 +9,14 @@ import com.focusup.entity.User;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.LevelException;
 import com.focusup.global.apiPayload.exception.MemberException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class LevelService {
-    @PersistenceContext
-    private final EntityManager em;
 
     private final UserRepository userRepository;
     private final LevelRepository levelRepository;
@@ -31,7 +25,7 @@ public class LevelService {
     @Transactional
     public LevelHistory findLevel (String oauthId) {
         User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new MemberException(ErrorCode.USER_NOT_FOUND));
-        LevelHistory levelHistory = levelHistoryRepository.findByUserId(user.getId());
+        LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
 
         return levelHistory;
     }
