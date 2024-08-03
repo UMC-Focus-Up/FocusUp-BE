@@ -8,6 +8,7 @@ import com.focusup.global.security.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -38,11 +39,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // csrf 비활성화
                 .sessionManagement(c ->
                         c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용하지 않음
-
                 // request 인증, 인가 설정
-                .authorizeHttpRequests(request -> request.
-                                requestMatchers("api/user/auth/**", "login/oauth2/code/**").permitAll()
-                            .anyRequest().authenticated()
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("api/user/auth/**", "login/oauth2/code/**").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 // oauth2 설정
