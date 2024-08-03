@@ -15,14 +15,14 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
-public class Datainitializer {
+public class DataInitializer {
 
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final LevelRepository levelRepository;
     private final LevelHistoryRepository levelHistoryRepository;
 
-    public Datainitializer(UserRepository userRepository, ItemRepository itemRepository, LevelRepository levelRepository, LevelHistoryRepository levelHistoryRepository) {
+    public DataInitializer(UserRepository userRepository, ItemRepository itemRepository, LevelRepository levelRepository, LevelHistoryRepository levelHistoryRepository) {
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
         this.levelRepository = levelRepository;
