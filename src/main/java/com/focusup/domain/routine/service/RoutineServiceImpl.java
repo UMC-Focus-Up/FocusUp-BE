@@ -7,6 +7,7 @@ import com.focusup.domain.routine.dto.RoutineResponseDTO;
 import com.focusup.domain.routine.dto.UserRoutineResponseDTO;
 import com.focusup.domain.routine.repository.RoutineRepository;
 import com.focusup.domain.routine.repository.UserRoutineRepository;
+import com.focusup.domain.user.repository.UserRepository;
 import com.focusup.entity.*;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
@@ -28,6 +29,7 @@ public class RoutineServiceImpl implements RoutineService{
     private final UserRoutineRepository userRoutineRepository;
     private final LevelHistoryRepository levelHistoryRepository;
     private final LevelRepository levelRepository;
+    private final UserRepository userRepository;
 
     // 마이페이지 조회
     public RoutineResponseDTO.MyPage getMyPage() {
@@ -92,11 +94,13 @@ public class RoutineServiceImpl implements RoutineService{
     }
 
     // 루틴 완료 service
-    public Long finishRoutine(RoutineRequestDTO.FinishRoutine request, Long routineId) {
+    public Long finishRoutine(RoutineRequestDTO.FinishRoutine request, Long routineId, String oauthId) {
+        // 유저 확인
+        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
         // 루틴 id로 해당 루틴 가져오기
         Routine routine = routineRepository.findById(routineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
         // 전체 루틴 시간 (분 단위)
-        long totalTime = Duration.between(routine.getUserRoutine().getStartTime(), routine.getUserRoutine().getGoalTime()).toMinutes();
+        long totalTime = Duration.between(LocalTime.MIDNIGHT, routine.getUserRoutine().getGoalTime()).toMinutes();
         // 실행 시간 (분 단위)
         long execTime = Duration.between(LocalTime.MIDNIGHT, request.getExecTime()).toMinutes();
         // 달성률 계산
@@ -109,10 +113,7 @@ public class RoutineServiceImpl implements RoutineService{
         // 업데이트된 Routine 저장
         routineRepository.save(routine);
 
-        // 유저의 levelHistory의 successCount 1 증가
-        List<UserRoutine> userRoutines = userRoutineRepository.findByRoutines(routine);
-        UserRoutine userRoutine = userRoutines.get(0);
-        User user = userRoutine.getUser();
+        // 유저의 level successcount 확인
         LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
         levelHistory.addSuccessCount();
 
@@ -127,6 +128,7 @@ public class RoutineServiceImpl implements RoutineService{
             } else {
                 throw (new LevelException(ErrorCode.LEVEL_TOO_HIGH));
             }
+
         }
 
         return routineId;

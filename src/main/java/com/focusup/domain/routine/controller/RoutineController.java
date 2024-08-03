@@ -4,6 +4,7 @@ import com.focusup.domain.routine.dto.RoutineRequestDTO;
 import com.focusup.domain.routine.dto.RoutineResponseDTO;
 import com.focusup.domain.routine.service.RoutineServiceImpl;
 import com.focusup.global.apiPayload.Response;
+import com.focusup.global.handler.annotation.Auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +18,8 @@ public class RoutineController {
 
     // 루틴 완료하기 POST method
     @PostMapping("/{routineId}")
-    public Response<Long> finishRoutine(@RequestBody RoutineRequestDTO.FinishRoutine request, @PathVariable Long routineId) {
-        Long finishedRoutineId = routineService.finishRoutine(request, routineId);
+    public Response<Long> finishRoutine(@RequestBody RoutineRequestDTO.FinishRoutine request, @PathVariable Long routineId, @Auth String oauthId) {
+        Long finishedRoutineId = routineService.finishRoutine(request, routineId, oauthId);
         return Response.success(finishedRoutineId);
     }
 
