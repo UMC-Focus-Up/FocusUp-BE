@@ -13,6 +13,7 @@ public enum ErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST,"잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "금지된 요청입니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "찾을 수 없습니다."),
     
     // 토큰 에러
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),

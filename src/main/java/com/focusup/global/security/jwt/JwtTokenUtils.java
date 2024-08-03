@@ -31,7 +31,7 @@ import static com.focusup.global.apiPayload.code.ErrorCode.INVALID_TOKEN;
 @Slf4j
 @Component
 public class JwtTokenUtils {
-    private static final long ACCESS_TOKEN_DURATION =  1000 * 60 * 30L; // 30분
+    private static final long ACCESS_TOKEN_DURATION =  1000 * 60 * 60L * 24; // 1일
     private static final long REFRESH_TOKEN_DURATION = 1000 * 60 * 60L * 24 * 7; // 7일
 
     @Value("${jwt.secret}")
