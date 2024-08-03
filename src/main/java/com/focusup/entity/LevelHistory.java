@@ -41,4 +41,19 @@ public class LevelHistory extends BaseEntity {
         this.newLevel = newLevel;
         return newLevel.getLevel();
     }
+
+    public int addLevel(Level addLevel) {
+        this.level = addLevel;
+        return level.getLevel();
+    }
+
+    public int addSuccessCount() {
+        this.successCount++;
+        return successCount;
+    }
+
+    public int changeSuccessCount(int successCount) {
+        this.successCount = successCount;
+        return successCount;
+    }
 }
