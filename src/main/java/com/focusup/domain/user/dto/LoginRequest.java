@@ -16,5 +16,5 @@ public class LoginRequest {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
     @NotNull
-    private String token;
+    private String id;
 }

@@ -24,7 +24,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/auth/login")
-    @Operation(summary = "소셜 로그인 token 전달 api")
+    @Operation(summary = "소셜 로그인 api")
     public Response<LoginResponse> socialLogin(@RequestBody @Valid LoginRequest request){
         return  Response.success(userService.socialLogin(request));
     }
