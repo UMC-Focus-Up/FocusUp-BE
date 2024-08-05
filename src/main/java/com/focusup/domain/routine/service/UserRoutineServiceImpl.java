@@ -101,12 +101,12 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     // 유저 루틴 전체 리스트 조회 service
-    public UserRoutineResponseDTO.GetAllUserRoutineList getAllUserRoutineList() {
+    public UserRoutineResponseDTO.GetAllUserRoutineSpecRoutineList getAllUserRoutineList() {
         List<UserRoutine> userRoutines = userRoutineRepository.findAll(Sort.by(Sort.Direction.ASC, "startDate"));
 
         // 유저 루틴 DTO로 변환
-        List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
-                .map(ur -> UserRoutineResponseDTO.UserRoutine.builder()
+        List<UserRoutineResponseDTO.UserRoutineSpecRoutine> userRoutineDTOs = userRoutines.stream()
+                .map(ur -> UserRoutineResponseDTO.UserRoutineSpecRoutine.builder()
                         .id(ur.getId())
                         .name(ur.getName())
                         .specRoutine(getSpecRoutine(ur.getId()))
@@ -114,7 +114,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
                 .collect(Collectors.toList());
 
         // List DTO로 변환
-        return UserRoutineResponseDTO.GetAllUserRoutineList.builder().routines(userRoutineDTOs).build();
+        return UserRoutineResponseDTO.GetAllUserRoutineSpecRoutineList.builder().routines(userRoutineDTOs).build();
     }
 
     // 유저 루틴 아이디를 통해 루틴 상제 정보 조회 service
