@@ -32,8 +32,8 @@ public class UserRoutineController {
     // 전체 유저루틴 조회하기 GET method
     @GetMapping("/all")
     @Operation(summary = "전체 상위 루틴 리스트 조회 API")
-    public Response<UserRoutineResponseDTO.GetAllUserRoutineList> getAllUserRoutine() {
-        UserRoutineResponseDTO.GetAllUserRoutineList allUserRoutineList = userRoutineService.getAllUserRoutineList();
+    public Response<UserRoutineResponseDTO.GetAllUserRoutineSpecRoutineList> getAllUserRoutine() {
+        UserRoutineResponseDTO.GetAllUserRoutineSpecRoutineList allUserRoutineList = userRoutineService.getAllUserRoutineList();
         return Response.success(allUserRoutineList);
     }
 
