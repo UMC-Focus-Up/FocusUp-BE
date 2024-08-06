@@ -27,6 +27,7 @@ public enum ErrorCode {
 
     // Routine 에러
     ROUTINE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 루틴입니다."),
+    USER_ROUTINE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 유저 루틴입니다."),
     DELAY_COUNT_OVER(HttpStatus.BAD_REQUEST, "미루기 기능은 최대 6번까지만 가능합니다."),
 
     // Item 에러

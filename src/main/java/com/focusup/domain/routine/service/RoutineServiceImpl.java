@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +38,13 @@ public class RoutineServiceImpl implements RoutineService{
         User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "startDate"));
-        List<UserRoutine> userRoutines = userRoutineRepository.findAll(pageable).getContent();
+        List<UserRoutine> userRoutines;
+        // 루틴이 없는 경우
+        try {
+            userRoutines = userRoutineRepository.findAll(pageable).getContent();
+        } catch (Exception e) {
+            throw new RoutineException(ErrorCode.USER_ROUTINE_NOT_FOUND, "유저루틴을 찾을 수 없습니다.");
+        }
 
         // 유저 루틴 DTO로 변환
         List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
@@ -46,15 +53,19 @@ public class RoutineServiceImpl implements RoutineService{
                         .name(ur.getName())
                         .build())
                 .collect(Collectors.toList());
+        // 유저 루틴이 없는 경우
+        List<Routine> routines;
+        try {
+            routines = routineRepository.findAll();
+        } catch (Exception e) {
+            throw new RoutineException(ErrorCode.ROUTINE_NOT_FOUND, "루틴을 찾을 수 없습니다.");
+        }
 
-        List<Routine> routines = routineRepository.findAll();
         List<RoutineResponseDTO.DateRoutines> dateRoutineDTOs = routines.stream()
                 .collect(Collectors.groupingBy(Routine::getDate))
                 .entrySet().stream()
                 .map(entry -> convertToDateRoutinesDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-
-        System.out.println("Step3 ==============");
 
         return RoutineResponseDTO.MyPage.builder()
                 .userRoutines(userRoutineDTOs)
@@ -65,7 +76,8 @@ public class RoutineServiceImpl implements RoutineService{
     }
 
     // routineList를 DateRoutinesDTO로 변환
-    private RoutineResponseDTO.DateRoutines convertToDateRoutinesDTO(LocalDate date, List<Routine> routines) {
+    @Transactional
+    public RoutineResponseDTO.DateRoutines convertToDateRoutinesDTO(LocalDate date, List<Routine> routines) {
         double totalAchieveRate = routines.stream()
                 .mapToDouble(Routine::getAchieveRate)
                 .average()
@@ -85,23 +97,6 @@ public class RoutineServiceImpl implements RoutineService{
                 .date(date)
                 .totalAchieveRate(totalAchieveRate)
                 .routines(routineDTOs)
-                .build();
-    }
-
-    // routine을 routineDTO로 변환
-    private RoutineResponseDTO.Routine convertToRoutineDTO(Routine routine) {
-        Duration duration = Duration.between(routine.getUserRoutine().getStartTime(), routine.getUserRoutine().getGoalTime());
-        LocalTime targetTime = LocalTime.of(
-                (int) duration.toHours(),
-                (int) (duration.toMinutes() % 60),
-                0); // 초는 0으로 설정
-
-        return RoutineResponseDTO.Routine.builder()
-                .id(routine.getId())
-                .name(routine.getUserRoutine().getName()) // UserRoutine에서 name 가져오기
-                .targetTime(targetTime)
-                .execTime(routine.getExecTime())
-                .achieveRate(routine.getAchieveRate())
                 .build();
     }
 
