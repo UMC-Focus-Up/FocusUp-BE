@@ -17,10 +17,6 @@ import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.TokenException;
 import com.focusup.global.apiPayload.exception.UserException;
-import com.focusup.global.security.feign.KakaoClient;
-import com.focusup.global.security.feign.KakaoUserResponse;
-import com.focusup.global.security.feign.NaverClient;
-import com.focusup.global.security.feign.NaverUserResponse;
 import com.focusup.global.security.jwt.JwtTokenUtils;
 import com.focusup.global.security.jwt.TokenInfo;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 
-import static com.focusup.entity.enums.SocialType.KAKAO;
-import static com.focusup.entity.enums.SocialType.NAVER;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -51,8 +45,6 @@ public class UserServiceImpl implements UserService{
     private final OrderRepository orderRepository;
     private final RoutineRepository routineRepository;
     private final JwtTokenUtils jwtTokenUtils;
-    private final KakaoClient kakaoClient;
-    private final NaverClient naverClient;
 
     @Override
     @Transactional
@@ -75,19 +67,14 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public LoginResponse socialLogin(LoginRequest request) {
         SocialType socialType = request.getSocialType();
-        String oauthId;
-        if (socialType == NAVER) {
-            NaverUserResponse userInfo = naverClient.getUserInfo("Bearer " + request.getToken());
-            oauthId = userInfo.getResponse().getId();
-        } else if (socialType == KAKAO) {
-            KakaoUserResponse userInfo = kakaoClient.getUserInfo("Bearer " + request.getToken());
-            oauthId = userInfo.getId();
-        } else {
-            throw new UserException(UNSUPPORTED_SOCIAL_TYPE);
-        }
-        if(oauthId == null) throw new UserException(UNAUTHORIZED);
+        String socialId = request.getId();
+        String oauthId = socialType + "_" + socialId;
 
-        User user = getOrSave(oauthId, socialType);
+        if (socialType != SocialType.NAVER && socialType != SocialType.KAKAO) {
+            throw new UserException(ErrorCode.UNAUTHORIZED);
+        }
+
+        User user = getOrSave(oauthId, socialType); // 신규 유저일 경우 회원가입
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 user.getOauthId(), null, Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())));
         TokenInfo tokenInfo = jwtTokenUtils.generateToken(authentication);

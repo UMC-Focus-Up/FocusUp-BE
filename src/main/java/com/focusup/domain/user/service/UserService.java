@@ -10,7 +10,5 @@ public interface UserService {
     UserResponse.homeInfoDTO getHomeInfo(String oauthId);
     UserResponse.characterPageInfoDTO getCharacterPageInfo(String oauthId);
     LoginResponse socialLogin(LoginRequest request);
-
     void withdraw(String oauthId);
-
 }
