@@ -140,6 +140,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     @Transactional
     public UserRoutineResponseDTO.UserRoutineDetail getUserRoutineDetail(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+        Hibernate.initialize(userRoutine.getRepeatCycleDay()); // 컬렉션 초기화
 
         // List DTO로 변환
         return UserRoutineResponseDTO.UserRoutineDetail.builder()
