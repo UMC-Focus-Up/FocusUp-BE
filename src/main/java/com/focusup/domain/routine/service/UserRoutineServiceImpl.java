@@ -33,6 +33,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     private final UserRepository userRepository;
 
     // 유저 루틴 생성 service
+    @Transactional
     public Long createUserRoutine(UserRoutineRequestDTO.CreateRoutine request, String oauthId) {
         // 종료일 설정(우선 한달
         LocalDate endDate = request.getStartDate().plusMonths(1);
