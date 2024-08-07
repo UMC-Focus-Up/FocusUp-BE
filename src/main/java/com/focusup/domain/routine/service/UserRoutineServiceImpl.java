@@ -137,6 +137,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     // 유저 루틴 상세 정보 조회 service
+    @Transactional
     public UserRoutineResponseDTO.UserRoutineDetail getUserRoutineDetail(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
 

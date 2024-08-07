@@ -62,9 +62,12 @@ public class RoutineServiceImpl implements RoutineService{
                 .map(entry -> convertToDateRoutinesDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
 
+        LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
+        Hibernate.initialize(levelHistory.getLevel()); // 프록시 초기화
+
         return RoutineResponseDTO.MyPage.builder()
                 .userRoutines(userRoutineDTOs)
-                .level(levelHistoryRepository.findByUser(user).getLevel().getLevel()) // levelHistory를 userId로 조회
+                .level(levelHistory.getLevel().getLevel()) // levelHistory를 userId로 조회
                 .successCount(levelHistoryRepository.findByUser(user).getSuccessCount()) // levelHistory를 userId로 조회
                 .routines(dateRoutineDTOs)
                 .build();
