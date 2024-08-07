@@ -34,6 +34,7 @@ public class RoutineServiceImpl implements RoutineService{
     private final UserRepository userRepository;
 
     // 마이페이지 조회
+    @Transactional
     public RoutineResponseDTO.MyPage getMyPage(String oauthId) {
         // 유저 확인
         User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
