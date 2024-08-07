@@ -11,6 +11,7 @@ import com.focusup.entity.UserRoutine;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,6 +105,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     // 유저 루틴 전체 리스트 조회 service
     public UserRoutineResponseDTO.GetAllUserRoutineList getAllUserRoutineList() {
         List<UserRoutine> userRoutines = userRoutineRepository.findAll(Sort.by(Sort.Direction.ASC, "startDate"));
+        userRoutines.forEach(ur -> Hibernate.initialize(ur.getRoutines())); // 컬렉션 초기화
 
         // 유저 루틴 DTO로 변환
         List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
