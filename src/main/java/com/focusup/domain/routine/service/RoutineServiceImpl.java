@@ -14,6 +14,7 @@ import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.LevelException;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import java.time.*;
 import java.util.List;
@@ -39,12 +40,9 @@ public class RoutineServiceImpl implements RoutineService{
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "startDate"));
         List<UserRoutine> userRoutines;
-        // 루틴이 없는 경우
-        try {
-            userRoutines = userRoutineRepository.findAll(pageable).getContent();
-        } catch (Exception e) {
-            throw new RoutineException(ErrorCode.USER_ROUTINE_NOT_FOUND, "유저루틴을 찾을 수 없습니다.");
-        }
+
+        userRoutines = userRoutineRepository.findAll(pageable).getContent();
+        userRoutines.forEach(ur -> Hibernate.initialize(ur.getRoutines())); // 컬렉션 초기화
 
         // 유저 루틴 DTO로 변환
         List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
@@ -53,13 +51,9 @@ public class RoutineServiceImpl implements RoutineService{
                         .name(ur.getName())
                         .build())
                 .collect(Collectors.toList());
-        // 유저 루틴이 없는 경우
+        // 루틴이 없는 경우
         List<Routine> routines;
-        try {
-            routines = routineRepository.findAll();
-        } catch (Exception e) {
-            throw new RoutineException(ErrorCode.ROUTINE_NOT_FOUND, "루틴을 찾을 수 없습니다.");
-        }
+        routines = routineRepository.findAll();
 
         List<RoutineResponseDTO.DateRoutines> dateRoutineDTOs = routines.stream()
                 .collect(Collectors.groupingBy(Routine::getDate))
