@@ -13,7 +13,6 @@ import com.focusup.entity.*;
 
 import com.focusup.entity.enums.Role;
 import com.focusup.entity.enums.SocialType;
-import com.focusup.global.apiPayload.Response;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.TokenException;
