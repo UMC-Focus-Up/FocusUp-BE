@@ -53,6 +53,11 @@ public class ItemServiceImpl implements ItemService {
         int userPoint = user.getPoint();
         Item item = itemRepository.findById(purchaseDTO.getItemId())
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND)); // 아이템이 존재하지 않을 경우 예외 처리
+
+        if (orderRepository.findItemByUserIdAndItemId(user.getId(), item.getId()).isPresent()) {
+            throw(new CustomException(ErrorCode.INVALID_PURCHASE));
+        }
+
         int price = item.getPrice();
         if(price <= userPoint){
             Order order = Order.builder()
