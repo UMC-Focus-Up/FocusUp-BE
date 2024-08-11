@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,7 +98,18 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND)); // 아이템이 존재하지 않을 경우 예외 처리
 
-        user.changeCurItem(item);
+        if(Objects.equals(item.getName(), "부활권")) {
+            if (user.getLife() == 0) {
+                user.resurrect(); // 부활권 사용
+                orderRepository.useResurrection(user.getId()); // 부활권 차감
+            }
+            else{
+                throw(new CustomException(ErrorCode.INVALID_ITEM_USAGE)); // 부활권 사용 불가능할 경우 예외 처리
+            }
+        }
+        else{
+            user.changeCurItem(item); // 아이템 장착
+        }
     }
 
     @Transactional

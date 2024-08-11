@@ -114,4 +114,8 @@ public class User extends BaseEntity implements UserDetails {
         this.point = 0;
         this.curItem = null;
     }
+
+    public void resurrect() {
+        this.life = 3;
+    }
 }

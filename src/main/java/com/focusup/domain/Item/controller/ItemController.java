@@ -43,7 +43,7 @@ public class ItemController {
     @Operation(summary = "캐릭터 아이템 선택 API")
     public Response<?> selectCharacterItem(@Auth String oauthId, @RequestBody ItemRequest.selectCharacterItemDTO request){
         itemService.selectCharacterItem(oauthId, request);
-        return Response.success("정상적으로 아이템을 장착하였습니다.");
+        return Response.success("정상적으로 아이템을 장착(사용)하였습니다.");
     }
 
     @PostMapping("/deselect")
