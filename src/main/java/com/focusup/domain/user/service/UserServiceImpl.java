@@ -13,6 +13,7 @@ import com.focusup.entity.*;
 
 import com.focusup.entity.enums.Role;
 import com.focusup.entity.enums.SocialType;
+import com.focusup.global.apiPayload.Response;
 import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.TokenException;
@@ -97,6 +98,16 @@ public class UserServiceImpl implements UserService{
 
         // 사용자 삭제
         userRepository.deleteUserById(user.getId());
+    }
+
+    @Transactional
+    @Override
+    public void restart(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.restart(); // 유저의 생명, 포인트, 장착 아이템 초기화
+        orderRepository.deleteByUserId(user.getId()); // 아이템 구매 기록 삭제
     }
 
 
