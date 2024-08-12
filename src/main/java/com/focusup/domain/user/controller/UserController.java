@@ -54,6 +54,13 @@ public class UserController {
         return Response.success(userService.getCharacterPageInfo(oauthId));
     }
 
+    @PostMapping("/restart")
+    @Operation(summary = "게임 오버 시 다시 시작")
+    public Response<?> restart(@Auth String oauthId){
+        userService.restart(oauthId);
+        return Response.success("정상적으로 다시 시작하였습니다");
+    }
+
     @GetMapping("/auth/success")
     @Operation(summary = "로그인 성공 후 토큰 응답 api, 백엔드용")
     public Response<LoginResponse> loginSuccess(@Valid LoginResponse loginResponse) {

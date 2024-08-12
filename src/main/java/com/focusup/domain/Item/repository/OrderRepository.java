@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -21,4 +22,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Modifying
     @Query("DELETE FROM Order o WHERE o.user.id = :userId")
     void deleteByUserId(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("DELETE FROM Order o WHERE o.user.id = :userId AND o.item.name = '부활권'")
+    void useResurrection(@Param("userId") Long userId);
+
+    Optional<Order> findItemByUserIdAndItemId(Long user_id, Long item_id);
 }

@@ -11,4 +11,5 @@ public interface UserService {
     UserResponse.characterPageInfoDTO getCharacterPageInfo(String oauthId);
     LoginResponse socialLogin(LoginRequest request);
     void withdraw(String oauthId);
+    void restart(String oauthId);
 }

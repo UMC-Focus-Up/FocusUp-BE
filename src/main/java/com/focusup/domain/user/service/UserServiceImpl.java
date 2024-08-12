@@ -99,6 +99,16 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteUserById(user.getId());
     }
 
+    @Transactional
+    @Override
+    public void restart(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.restart(); // 유저의 생명, 포인트, 장착 아이템 초기화
+        orderRepository.deleteByUserId(user.getId()); // 아이템 구매 기록 삭제
+    }
+
 
     private User getOrSave(String oauthId, SocialType socialType) {
         User user = userRepository.findByOauthId(oauthId).orElse(null);
