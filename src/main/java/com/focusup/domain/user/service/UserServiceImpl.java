@@ -134,7 +134,8 @@ public class UserServiceImpl implements UserService{
         }
         return user;
     }
-  
+
+    @Transactional
     @Override
     public UserResponse.homeInfoDTO getHomeInfo(String oauthId) {
         User user = userRepository.findByOauthId(oauthId)
