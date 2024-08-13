@@ -215,6 +215,7 @@ public class UserServiceImpl implements UserService{
         return UserResponse.characterPageInfoDTO.builder()
                 .life(user.getLife())
                 .point(user.getPoint())
+                .status(user.getLife() > 0)
                 .item(currentItemDTO)
                 .build();
     }
