@@ -23,6 +23,7 @@ public class UserResponse {
     public static class characterPageInfoDTO {
         int life;
         int point;
+        boolean status;
         UserResponse.currentItemDTO item;
     }
 
