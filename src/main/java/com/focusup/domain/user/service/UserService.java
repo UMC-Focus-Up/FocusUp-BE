@@ -9,6 +9,7 @@ public interface UserService {
     TokenInfo refreshAccessToken(String refreshToken);
     UserResponse.homeInfoDTO getHomeInfo(String oauthId);
     UserResponse.characterPageInfoDTO getCharacterPageInfo(String oauthId);
+    void addPoint(String oauthId, int point);
     LoginResponse socialLogin(LoginRequest request);
     void withdraw(String oauthId);
     void restart(String oauthId);
