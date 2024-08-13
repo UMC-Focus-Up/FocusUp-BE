@@ -27,5 +27,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("DELETE FROM Order o WHERE o.user.id = :userId AND o.item.name = '부활권'")
     void useResurrection(@Param("userId") Long userId);
 
+    @Modifying
+    @Query(value = "DELETE FROM `orders` WHERE user_id = :userId AND item_id = 15 LIMIT 1", nativeQuery = true)
+    void useSeashell(@Param("userId") Long userId);
+
     Optional<Order> findItemByUserIdAndItemId(Long user_id, Long item_id);
 }
