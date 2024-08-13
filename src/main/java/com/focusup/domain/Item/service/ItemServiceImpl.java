@@ -54,7 +54,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(purchaseDTO.getItemId())
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND)); // 아이템이 존재하지 않을 경우 예외 처리
 
-        if (orderRepository.findItemByUserIdAndItemId(user.getId(), item.getId()).isPresent()) {
+        // 생명권이 아닌 경우만 구매 중복 방지
+        if (!Objects.equals(item.getName(), "생명권") && orderRepository.findItemByUserIdAndItemId(user.getId(), item.getId()).isPresent()) {
             throw(new CustomException(ErrorCode.INVALID_PURCHASE));
         }
 
