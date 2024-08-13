@@ -219,4 +219,13 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    @Transactional
+    @Override
+    public void addPoint(String oauthId, int point) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
+
+        user.addPoint(point); // 포인트 추가
+    }
+
 }

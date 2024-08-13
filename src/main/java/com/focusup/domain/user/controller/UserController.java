@@ -3,6 +3,7 @@ package com.focusup.domain.user.controller;
 import com.focusup.domain.user.dto.LoginRequest;
 import com.focusup.domain.user.dto.LoginResponse;
 import com.focusup.domain.user.dto.RefreshTokenRequest;
+import com.focusup.domain.user.dto.UserRequest;
 import com.focusup.domain.user.service.UserService;
 import com.focusup.global.apiPayload.Response;
 import com.focusup.global.handler.annotation.Auth;
@@ -59,6 +60,13 @@ public class UserController {
     public Response<?> restart(@Auth String oauthId){
         userService.restart(oauthId);
         return Response.success("정상적으로 다시 시작하였습니다");
+    }
+
+    @PostMapping("/addPoint")
+    @Operation(summary = "포인트(물고기) 추가 api")
+    public Response<?> addPoint(@Auth String oauthId, @RequestBody UserRequest.addPointDTO request){
+        userService.addPoint(oauthId, request.getPoint());
+        return Response.success("포인트를 " + request.getPoint() + " 추가하였습니다");
     }
 
     @GetMapping("/auth/success")
