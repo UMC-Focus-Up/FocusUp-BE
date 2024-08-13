@@ -113,7 +113,11 @@ public class ItemServiceImpl implements ItemService {
                 throw(new CustomException(ErrorCode.INVALID_ITEM_USAGE)); // 부활권 사용 불가능할 경우 예외 처리
             }
         }
-        else{
+        else if (Objects.equals(item.getName(), "생명권")){ // 생명권 사용
+            user.addLife(1);
+            orderRepository.useSeashell(user.getId()); // 생명권 차감
+        }
+        else {
             user.changeCurItem(item); // 아이템 장착
         }
     }
