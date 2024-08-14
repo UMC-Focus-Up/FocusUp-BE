@@ -5,7 +5,7 @@ import com.focusup.domain.Item.dto.ItemResponse;
 
 public interface ItemService {
     ItemResponse.StoreInfoDTO getStoreInfo(String oauthId);
-    int purchaseItem(String oauthId, ItemRequest.PurchaseDTO purchaseDTO);
+    ItemResponse.PurchaseDTO purchaseItem(String oauthId, ItemRequest.PurchaseDTO purchaseDTO);
     ItemResponse.MyItemListDTO getMyItemList(String oauthId);
     void selectCharacterItem(String oauthId, ItemRequest.selectCharacterItemDTO request);
     void deselectCharacterItem(String oauthIdd);

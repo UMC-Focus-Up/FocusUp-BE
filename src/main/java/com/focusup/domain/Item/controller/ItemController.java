@@ -25,13 +25,10 @@ public class ItemController {
 
     @PostMapping("/purchase")
     @Operation(summary = "상점 아이템 구매 API")
-    public Response<?> purchaseItem(@Auth String oauthId, @RequestBody ItemRequest.PurchaseDTO request){
-        int point = itemService.purchaseItem(oauthId, request);
-        return Response.success(ItemResponse.PurchaseDTO.
-                builder()
-                .point(point)
-                .build());
+    public Response<ItemResponse.PurchaseDTO> purchaseItem(@Auth String oauthId, @RequestBody ItemRequest.PurchaseDTO request){
+        return Response.success(itemService.purchaseItem(oauthId, request));
     }
+
     @GetMapping("/myitem")
     @Operation(summary = "내 아이템 목록 조회 API")
     public Response<ItemResponse.MyItemListDTO> getMyItemList(@Auth String oauthId){
