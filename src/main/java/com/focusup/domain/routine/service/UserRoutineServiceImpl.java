@@ -9,6 +9,7 @@ import com.focusup.entity.Routine;
 import com.focusup.entity.User;
 import com.focusup.entity.UserRoutine;
 import com.focusup.global.apiPayload.code.ErrorCode;
+import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -103,8 +104,10 @@ public class UserRoutineServiceImpl implements UserRoutineService{
 
     // 유저 루틴 전체 리스트 조회 service
     @Transactional
-    public UserRoutineResponseDTO.GetAllUserRoutineSpecRoutineList getAllUserRoutineList() {
-        List<UserRoutine> userRoutines = userRoutineRepository.findAll(Sort.by(Sort.Direction.ASC, "startDate"));
+    public UserRoutineResponseDTO.GetAllUserRoutineSpecRoutineList getAllUserRoutineList(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<UserRoutine> userRoutines = userRoutineRepository.findByUserOrderByStartDateAsc(user); // 유저의 루틴 목록 조회
 
         // 유저 루틴 DTO로 변환
         List<UserRoutineResponseDTO.UserRoutineSpecRoutine> userRoutineDTOs = userRoutines.stream()
