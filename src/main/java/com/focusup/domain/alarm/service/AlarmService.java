@@ -5,4 +5,6 @@ import com.focusup.domain.alarm.dto.AlarmResponse;
 public interface AlarmService {
     // 루틴 알림 시, 사용자의 옵션 선택 service
     public AlarmResponse.AlarmResponseDto postAlarmOption(Long routineId, String oauthId, int option);
+    // 알람 화면 사용자 정보 조회 service
+    public AlarmResponse.AlarmUserInfoDto getAlarmUserInfo(String oauthId);
 }

@@ -59,4 +59,13 @@ public class AlarmServiceImpl implements AlarmService {
                 .delayCount(routine.getDelayCount())
                 .build();
     }
+
+    public AlarmResponse.AlarmUserInfoDto getAlarmUserInfo(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
+
+        return AlarmResponse.AlarmUserInfoDto.builder()
+                .life(user.getLife())
+                .point(user.getPoint())
+                .build();
+    }
 }
