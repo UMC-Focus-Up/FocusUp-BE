@@ -102,6 +102,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     // 유저 루틴 전체 리스트 조회 service
+    @Transactional
     public UserRoutineResponseDTO.GetAllUserRoutineSpecRoutineList getAllUserRoutineList() {
         List<UserRoutine> userRoutines = userRoutineRepository.findAll(Sort.by(Sort.Direction.ASC, "startDate"));
 
