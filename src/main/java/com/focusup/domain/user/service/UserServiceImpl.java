@@ -195,6 +195,7 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    @Transactional
     @Override
     public UserResponse.characterPageInfoDTO getCharacterPageInfo(String oauthId) {
         User user = userRepository.findByOauthId(oauthId)
