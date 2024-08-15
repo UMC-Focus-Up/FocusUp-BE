@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class LevelController {
     private final LevelService levelService;
 
-    @PutMapping("/{userId}")
+    @PutMapping("/user")
     @Operation(summary = "레벨 변경 API")
     public Response<LevelResponse.NewLevelResultDTO> changeNewLevel (@Auth String oauthId, @RequestParam(name = "level") Long level) {
         // level이 0인 경우, 기존 레벨로 돌아간다고 가정
