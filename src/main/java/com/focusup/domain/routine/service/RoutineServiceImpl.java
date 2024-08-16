@@ -52,9 +52,10 @@ public class RoutineServiceImpl implements RoutineService{
                         .name(ur.getName())
                         .build())
                 .collect(Collectors.toList());
-        // 루틴이 없는 경우
+
+        // 루틴 조회
         List<Routine> routines;
-        routines = routineRepository.findAll();
+        routines = routineRepository.findByUser(user);
         List<RoutineResponseDTO.DateRoutines> dateRoutineDTOs = routines.stream()
                 .collect(Collectors.groupingBy(Routine::getDate))
                 .entrySet().stream()
