@@ -43,11 +43,7 @@ public class RoutineServiceImpl implements RoutineService{
         List<UserRoutine> userRoutines;
 
         // 유저 루틴 가져오기
-        try {
-            userRoutines = userRoutineRepository.findAllByUser(user, pageable).getContent();
-        } catch (Exception e) {
-            throw new RoutineException(ErrorCode.USER_ROUTINE_NOT_FOUND, "유저루틴을 찾을 수 없습니다.");
-        }
+        userRoutines = userRoutineRepository.findAllByUser(user, pageable).getContent();
 
         // 유저 루틴 DTO로 변환
         List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
@@ -56,21 +52,14 @@ public class RoutineServiceImpl implements RoutineService{
                         .name(ur.getName())
                         .build())
                 .collect(Collectors.toList());
-
-        // 유저 루틴이 없는 경우의 처리: 이 경우 모든 루틴을 가져오는 것이 아니라, 상위 3개의 루틴만 가져옴
+        // 루틴이 없는 경우
         List<Routine> routines;
-        try {
-            routines = routineRepository.findAll(pageable).getContent(); // 상위 3개의 루틴만 가져옴
-        } catch (Exception e) {
-            throw new RoutineException(ErrorCode.ROUTINE_NOT_FOUND, "루틴을 찾을 수 없습니다.");
-        }
-
+        routines = routineRepository.findAll();
         List<RoutineResponseDTO.DateRoutines> dateRoutineDTOs = routines.stream()
                 .collect(Collectors.groupingBy(Routine::getDate))
                 .entrySet().stream()
                 .map(entry -> convertToDateRoutinesDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-
         return RoutineResponseDTO.MyPage.builder()
                 .userRoutines(userRoutineDTOs)
                 .level(levelHistoryRepository.findByUser(user).getLevel().getLevel()) // levelHistory를 userId로 조회
