@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> {
     List<UserRoutine> findByUser(User user);
-    List<UserRoutine> findByRoutines(Routine routine);
+    List<UserRoutine> findByUserOrderByStartDateAsc(User user);
     Optional<UserRoutine> findById(Long id);
 }

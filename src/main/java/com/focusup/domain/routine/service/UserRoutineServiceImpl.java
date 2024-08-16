@@ -103,10 +103,11 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     // 유저 루틴 전체 리스트 조회 service
-    public UserRoutineResponseDTO.GetAllUserRoutineList getAllUserRoutineList() {
-        List<UserRoutine> userRoutines = userRoutineRepository.findAll(Sort.by(Sort.Direction.ASC, "startDate"));
-        userRoutines.forEach(ur -> Hibernate.initialize(ur.getRoutines())); // 컬렉션 초기화
-
+    @Transactional
+    public UserRoutineResponseDTO.GetAllUserRoutineList getAllUserRoutineList(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
+        List<UserRoutine> userRoutines = userRoutineRepository.findByUserOrderByStartDateAsc(user); // 유저의 루틴 목록 조회
         // 유저 루틴 DTO로 변환
         List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
                 .map(ur -> UserRoutineResponseDTO.UserRoutine.builder()
