@@ -9,11 +9,13 @@ import com.focusup.global.apiPayload.Response;
 import com.focusup.global.handler.annotation.Auth;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/level")
+@Transactional
 public class LevelController {
     private final LevelService levelService;
 
