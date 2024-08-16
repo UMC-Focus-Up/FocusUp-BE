@@ -33,18 +33,17 @@ public class RoutineServiceImpl implements RoutineService{
     private final UserRepository userRepository;
 
     // 마이페이지 조회
+    @Transactional
     public RoutineResponseDTO.MyPage getMyPage(String oauthId) {
         // 유저 확인
-        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "startDate"));
         List<UserRoutine> userRoutines;
-        // 루틴이 없는 경우
-        try {
-            userRoutines = userRoutineRepository.findAll(pageable).getContent();
-        } catch (Exception e) {
-            throw new RoutineException(ErrorCode.USER_ROUTINE_NOT_FOUND, "유저루틴을 찾을 수 없습니다.");
-        }
+
+        // 유저 루틴 가져오기
+        userRoutines = userRoutineRepository.findAllByUser(user, pageable).getContent();
 
         // 유저 루틴 DTO로 변환
         List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
@@ -53,20 +52,15 @@ public class RoutineServiceImpl implements RoutineService{
                         .name(ur.getName())
                         .build())
                 .collect(Collectors.toList());
-        // 유저 루틴이 없는 경우
-        List<Routine> routines;
-        try {
-            routines = routineRepository.findAll();
-        } catch (Exception e) {
-            throw new RoutineException(ErrorCode.ROUTINE_NOT_FOUND, "루틴을 찾을 수 없습니다.");
-        }
 
+        // 루틴 조회
+        List<Routine> routines;
+        routines = routineRepository.findByUser(user);
         List<RoutineResponseDTO.DateRoutines> dateRoutineDTOs = routines.stream()
                 .collect(Collectors.groupingBy(Routine::getDate))
                 .entrySet().stream()
                 .map(entry -> convertToDateRoutinesDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-
         return RoutineResponseDTO.MyPage.builder()
                 .userRoutines(userRoutineDTOs)
                 .level(levelHistoryRepository.findByUser(user).getLevel().getLevel()) // levelHistory를 userId로 조회

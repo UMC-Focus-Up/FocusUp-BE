@@ -3,6 +3,8 @@ package com.focusup.domain.routine.repository;
 import com.focusup.entity.Routine;
 import com.focusup.entity.User;
 import com.focusup.entity.UserRoutine;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,8 +17,9 @@ import java.util.Optional;
 public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> {
     List<UserRoutine> findByUser(User user);
     List<UserRoutine> findByUserOrderByStartDateAsc(User user);
-    List<UserRoutine> findByRoutines(Routine routine);
     Optional<UserRoutine> findById(Long id);
+
+    Page<UserRoutine> findAllByUser(User user, Pageable pageable);
 
     @Modifying
     @Query("DELETE FROM UserRoutine ur WHERE ur.user.id = :userId")
