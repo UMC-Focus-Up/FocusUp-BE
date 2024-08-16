@@ -42,7 +42,7 @@ public class RoutineServiceImpl implements RoutineService{
         List<UserRoutine> userRoutines;
         // 루틴이 없는 경우
         try {
-            userRoutines = userRoutineRepository.findAll(pageable).getContent();
+            userRoutines = userRoutineRepository.findAllByUser(user, pageable).getContent();
         } catch (Exception e) {
             throw new RoutineException(ErrorCode.USER_ROUTINE_NOT_FOUND, "유저루틴을 찾을 수 없습니다.");
         }

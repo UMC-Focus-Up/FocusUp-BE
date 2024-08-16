@@ -20,7 +20,6 @@ public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> 
     Optional<UserRoutine> findById(Long id);
 
     Page<UserRoutine> findAllByUser(User user, Pageable pageable);
-    List<UserRoutine> findByRoutines(Routine routine);
 
     @Modifying
     @Query("DELETE FROM UserRoutine ur WHERE ur.user.id = :userId")
