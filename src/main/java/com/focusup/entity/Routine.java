@@ -31,7 +31,7 @@ public class Routine extends BaseEntity {
     @Builder.Default
     private int delayCount = 0;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userRoutineId")
     private UserRoutine userRoutine;
 

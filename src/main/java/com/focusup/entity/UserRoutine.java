@@ -23,7 +23,6 @@ public class UserRoutine extends BaseEntity {
     @Column(length = 30, nullable = false)
     private String name;
 
-    @ElementCollection
     private List<DayOfWeek> repeatCycleDay = new ArrayList<>();
 
     @Column(nullable = false)
@@ -40,6 +39,6 @@ public class UserRoutine extends BaseEntity {
     private User user;
 
     @Singular
-    @OneToMany(mappedBy = "userRoutine", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userRoutine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Routine> routines = new ArrayList<>();
 }

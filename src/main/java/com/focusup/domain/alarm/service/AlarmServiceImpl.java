@@ -32,10 +32,10 @@ public class AlarmServiceImpl implements AlarmService {
             // 루틴 미루기
             case 1:
                 // 현재 미루기 7번 이하, 유저의 포인트가 5 이상 남아야 미루기 가능
-                if (routine.getDelayCount() < 7 && user.getPoint() >= 5) {
+                if (routine.getDelayCount() < 6 && user.getPoint() >= 5) {
                     user.addPoint(-5);
                     routine.changeDelayCount(1);
-                } else if (routine.getDelayCount() >= 7){
+                } else if (routine.getDelayCount() > 6){
                     throw (new RoutineException(ErrorCode.DELAY_COUNT_OVER));
                 } else {
                     throw (new MemberException(ErrorCode.INSUFFICIENT_BALANCE));
@@ -57,6 +57,15 @@ public class AlarmServiceImpl implements AlarmService {
                 .life(user.getLife())
                 .point(user.getPoint())
                 .delayCount(routine.getDelayCount())
+                .build();
+    }
+
+    public AlarmResponse.AlarmUserInfoDto getAlarmUserInfo(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
+
+        return AlarmResponse.AlarmUserInfoDto.builder()
+                .life(user.getLife())
+                .point(user.getPoint())
                 .build();
     }
 }

@@ -108,4 +108,14 @@ public class User extends BaseEntity implements UserDetails {
     public void changeCurItem(Item item){
         this.curItem = item;
     }
+
+    public void restart() {
+        this.life = 5;
+        this.point = 0;
+        this.curItem = null;
+    }
+
+    public void resurrect() {
+        this.life = 3;
+    }
 }

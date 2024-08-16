@@ -18,10 +18,25 @@ public class UserRoutineResponseDTO {
         private List<UserRoutine> routines;
     }
 
+    // 유저 루틴 리스트 및 세부 루틴 조회 DTO
+    @Getter
+    @Builder
+    public static class GetAllUserRoutineSpecRoutineList {
+        private List<UserRoutineSpecRoutine> routines;
+    }
+
     // 유저 루틴 제목 DTO
     @Getter
     @Builder
     public static class UserRoutine {
+        private Long id;
+        private String name;
+    }
+
+    // 유저 루틴 제목 및 세부 루틴 DTO
+    @Getter
+    @Builder
+    public static class UserRoutineSpecRoutine {
         private Long id;
         private String name;
         private List<SpecRoutine> specRoutine;
