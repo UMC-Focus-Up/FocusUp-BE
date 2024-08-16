@@ -34,6 +34,7 @@ public class RoutineServiceImpl implements RoutineService{
     private final UserRepository userRepository;
 
     // 마이페이지 조회
+    // test
     @Transactional
     public RoutineResponseDTO.MyPage getMyPage(String oauthId) {
         // 유저 확인
