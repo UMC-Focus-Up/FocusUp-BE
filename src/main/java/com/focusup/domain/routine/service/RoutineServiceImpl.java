@@ -43,7 +43,7 @@ public class RoutineServiceImpl implements RoutineService{
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "startDate"));
         List<UserRoutine> userRoutines;
 
-        userRoutines = userRoutineRepository.findAll(pageable).getContent();
+        userRoutines = userRoutineRepository.findAllByUser(user, pageable).getContent();
         userRoutines.forEach(ur -> Hibernate.initialize(ur.getRoutines())); // 컬렉션 초기화
 
         // 유저 루틴 DTO로 변환
