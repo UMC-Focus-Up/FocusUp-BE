@@ -36,11 +36,13 @@ public class RoutineServiceImpl implements RoutineService{
     @Transactional
     public RoutineResponseDTO.MyPage getMyPage(String oauthId) {
         // 유저 확인
-        User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
 
         Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "startDate"));
         List<UserRoutine> userRoutines;
-        // 루틴이 없는 경우
+
+        // 유저 루틴 가져오기
         try {
             userRoutines = userRoutineRepository.findAllByUser(user, pageable).getContent();
         } catch (Exception e) {
@@ -54,10 +56,11 @@ public class RoutineServiceImpl implements RoutineService{
                         .name(ur.getName())
                         .build())
                 .collect(Collectors.toList());
-        // 유저 루틴이 없는 경우
+
+        // 유저 루틴이 없는 경우의 처리: 이 경우 모든 루틴을 가져오는 것이 아니라, 상위 3개의 루틴만 가져옴
         List<Routine> routines;
         try {
-            routines = routineRepository.findAll();
+            routines = routineRepository.findAll(pageable).getContent(); // 상위 3개의 루틴만 가져옴
         } catch (Exception e) {
             throw new RoutineException(ErrorCode.ROUTINE_NOT_FOUND, "루틴을 찾을 수 없습니다.");
         }
