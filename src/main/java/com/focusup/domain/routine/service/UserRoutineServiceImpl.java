@@ -9,6 +9,7 @@ import com.focusup.entity.Routine;
 import com.focusup.entity.User;
 import com.focusup.entity.UserRoutine;
 import com.focusup.global.apiPayload.code.ErrorCode;
+import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -108,8 +109,8 @@ public class UserRoutineServiceImpl implements UserRoutineService{
         userRoutines.forEach(ur -> Hibernate.initialize(ur.getRoutines())); // 컬렉션 초기화
 
         // 유저 루틴 DTO로 변환
-        List<UserRoutineResponseDTO.UserRoutine> userRoutineDTOs = userRoutines.stream()
-                .map(ur -> UserRoutineResponseDTO.UserRoutine.builder()
+        List<UserRoutineResponseDTO.UserRoutineSpecRoutine> userRoutineDTOs = userRoutines.stream()
+                .map(ur -> UserRoutineResponseDTO.UserRoutineSpecRoutine.builder()
                         .id(ur.getId())
                         .name(ur.getName())
                         .specRoutine(getSpecRoutine(ur.getId()))
@@ -117,7 +118,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
                 .collect(Collectors.toList());
 
         // List DTO로 변환
-        return UserRoutineResponseDTO.GetAllUserRoutineList.builder().routines(userRoutineDTOs).build();
+        return UserRoutineResponseDTO.GetAllUserRoutineSpecRoutineList.builder().routines(userRoutineDTOs).build();
     }
 
     // 유저 루틴 아이디를 통해 루틴 상제 정보 조회 service

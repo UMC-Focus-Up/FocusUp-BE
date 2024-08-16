@@ -9,15 +9,17 @@ import com.focusup.global.apiPayload.Response;
 import com.focusup.global.handler.annotation.Auth;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/level")
+@Transactional
 public class LevelController {
     private final LevelService levelService;
 
-    @PutMapping("/{userId}")
+    @PutMapping("/user")
     @Operation(summary = "레벨 변경 API")
     public Response<LevelResponse.NewLevelResultDTO> changeNewLevel (@Auth String oauthId, @RequestParam(name = "level") Long level) {
         // level이 0인 경우, 기존 레벨로 돌아간다고 가정

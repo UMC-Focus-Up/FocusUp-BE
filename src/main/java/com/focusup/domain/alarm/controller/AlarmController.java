@@ -22,4 +22,11 @@ public class AlarmController {
         AlarmResponse.AlarmResponseDto alarmResponseDto = alarmService.postAlarmOption(routineId, oauthId, option);
         return Response.success(alarmResponseDto);
     }
+
+    @GetMapping("/user")
+    @Operation(summary ="반복 루틴 알림 생명 및 포인트 조회 API")
+    public Response<AlarmResponse.AlarmUserInfoDto> getUserInfo (@Auth String oauthId) {
+        AlarmResponse.AlarmUserInfoDto alarmUserInfoDto = alarmService.getAlarmUserInfo(oauthId);
+        return Response.success(alarmUserInfoDto);
+    }
 }

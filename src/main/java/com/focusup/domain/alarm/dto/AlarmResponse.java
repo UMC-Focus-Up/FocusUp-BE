@@ -12,4 +12,11 @@ public class AlarmResponse {
         private int point;
         private int delayCount;
     }
+
+    @Builder
+    @Getter
+    public static class AlarmUserInfoDto {
+        private int life;
+        private int point;
+    }
 }

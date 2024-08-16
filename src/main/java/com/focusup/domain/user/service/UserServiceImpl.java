@@ -1,7 +1,9 @@
 package com.focusup.domain.user.service;
 
+import com.focusup.domain.Item.repository.OrderRepository;
 import com.focusup.domain.level.repository.LevelHistoryRepository;
 import com.focusup.domain.level.repository.LevelRepository;
+import com.focusup.domain.routine.repository.RoutineRepository;
 import com.focusup.domain.user.dto.LoginRequest;
 import com.focusup.domain.user.dto.LoginResponse;
 import com.focusup.domain.routine.repository.UserRoutineRepository;
@@ -15,10 +17,6 @@ import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.TokenException;
 import com.focusup.global.apiPayload.exception.UserException;
-import com.focusup.global.security.feign.KakaoClient;
-import com.focusup.global.security.feign.KakaoUserResponse;
-import com.focusup.global.security.feign.NaverClient;
-import com.focusup.global.security.feign.NaverUserResponse;
 import com.focusup.global.security.jwt.JwtTokenUtils;
 import com.focusup.global.security.jwt.TokenInfo;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 
-import static com.focusup.entity.enums.SocialType.KAKAO;
-import static com.focusup.entity.enums.SocialType.NAVER;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -46,9 +42,9 @@ public class UserServiceImpl implements UserService{
     private final LevelHistoryRepository levelHistoryRepository;
     private final LevelRepository levelRepository;
     private final UserRoutineRepository userRoutineRepository;
+    private final OrderRepository orderRepository;
+    private final RoutineRepository routineRepository;
     private final JwtTokenUtils jwtTokenUtils;
-    private final KakaoClient kakaoClient;
-    private final NaverClient naverClient;
 
     @Override
     @Transactional
@@ -71,25 +67,46 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public LoginResponse socialLogin(LoginRequest request) {
         SocialType socialType = request.getSocialType();
-        String oauthId;
-        if (socialType == NAVER) {
-            NaverUserResponse userInfo = naverClient.getUserInfo("Bearer " + request.getToken());
-            oauthId = userInfo.getResponse().getId();
-        } else if (socialType == KAKAO) {
-            KakaoUserResponse userInfo = kakaoClient.getUserInfo("Bearer " + request.getToken());
-            oauthId = userInfo.getId();
-        } else {
-            throw new UserException(UNSUPPORTED_SOCIAL_TYPE);
-        }
-        if(oauthId == null) throw new UserException(UNAUTHORIZED);
+        String socialId = request.getId();
+        String oauthId = socialType + "_" + socialId;
 
-        User user = getOrSave(oauthId, socialType);
+        if (socialType != SocialType.NAVER && socialType != SocialType.KAKAO) {
+            throw new UserException(ErrorCode.UNAUTHORIZED);
+        }
+
+        User user = getOrSave(oauthId, socialType); // 신규 유저일 경우 회원가입
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 user.getOauthId(), null, Collections.singleton(new SimpleGrantedAuthority(user.getRole().name())));
         TokenInfo tokenInfo = jwtTokenUtils.generateToken(authentication);
         user.setRefreshToken(tokenInfo.getRefreshToken());
 
         return new LoginResponse(tokenInfo.getAccessToken(), tokenInfo.getRefreshToken());
+    }
+
+    @Transactional
+    @Override
+    public void withdraw(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 관련 엔티티 삭제
+        levelHistoryRepository.deleteByUserId(user.getId());
+        orderRepository.deleteByUserId(user.getId());
+        routineRepository.deleteRoutinesByUserId(user.getId());
+        userRoutineRepository.deleteByUserId(user.getId());
+
+        // 사용자 삭제
+        userRepository.deleteUserById(user.getId());
+    }
+
+    @Transactional
+    @Override
+    public void restart(String oauthId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.restart(); // 유저의 생명, 포인트, 장착 아이템 초기화
+        orderRepository.deleteByUserId(user.getId()); // 아이템 구매 기록 삭제
     }
 
 
@@ -117,7 +134,8 @@ public class UserServiceImpl implements UserService{
         }
         return user;
     }
-  
+
+    @Transactional
     @Override
     public UserResponse.homeInfoDTO getHomeInfo(String oauthId) {
         User user = userRepository.findByOauthId(oauthId)
@@ -177,6 +195,7 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    @Transactional
     @Override
     public UserResponse.characterPageInfoDTO getCharacterPageInfo(String oauthId) {
         User user = userRepository.findByOauthId(oauthId)
@@ -198,8 +217,18 @@ public class UserServiceImpl implements UserService{
         return UserResponse.characterPageInfoDTO.builder()
                 .life(user.getLife())
                 .point(user.getPoint())
+                .status(user.getLife() > 0)
                 .item(currentItemDTO)
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public void addPoint(String oauthId, int point) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
+
+        user.addPoint(point); // 포인트 추가
     }
 
 }

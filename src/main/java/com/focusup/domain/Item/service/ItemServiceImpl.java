@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,25 +47,40 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public int purchaseItem(String oauthId, ItemRequest.PurchaseDTO purchaseDTO) {
+    public ItemResponse.PurchaseDTO purchaseItem(String oauthId, ItemRequest.PurchaseDTO purchaseDTO) {
         User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 사용자가 존재하지 않을 경우 예외 처리
         int userPoint = user.getPoint();
         Item item = itemRepository.findById(purchaseDTO.getItemId())
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND)); // 아이템이 존재하지 않을 경우 예외 처리
+
+        if (orderRepository.findItemByUserIdAndItemId(user.getId(), item.getId()).isPresent()) { // 아이템 중복 구매 방지
+            throw(new CustomException(ErrorCode.INVALID_PURCHASE));
+        }
+
         int price = item.getPrice();
+
         if(price <= userPoint){
-            Order order = Order.builder()
-                    .item(item)
-                    .user(user)
-                    .build();
-            orderRepository.save(order);
+            if(Objects.equals(item.getName(), "생명권")){
+                user.addLife(1); // 생명 추가
+            }
+            else{
+                Order order = Order.builder()
+                        .item(item)
+                        .user(user)
+                        .build();
+                orderRepository.save(order); // 구매 기록 저장
+            }
+
             userPoint -= price;
             user.changePoint(userPoint);
-            return userPoint;
+            return ItemResponse.PurchaseDTO.builder()
+                    .life(user.getLife())
+                    .point(userPoint)
+                    .build();
         }
         else{
-            throw(new CustomException(ErrorCode.INSUFFICIENT_BALANCE));
+            throw(new CustomException(ErrorCode.INSUFFICIENT_BALANCE)); // 포인트 부족
         }
     }
 
@@ -97,7 +113,18 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new CustomException(ErrorCode.ITEM_NOT_FOUND)); // 아이템이 존재하지 않을 경우 예외 처리
 
-        user.changeCurItem(item);
+        if(Objects.equals(item.getName(), "부활권")) {
+            if (user.getLife() == 0) {
+                user.resurrect(); // 부활권 사용
+                orderRepository.useResurrection(user.getId()); // 부활권 차감
+            }
+            else{
+                throw(new CustomException(ErrorCode.INVALID_ITEM_USAGE)); // 부활권 사용 불가능할 경우 예외 처리
+            }
+        }
+        else {
+            user.changeCurItem(item); // 아이템 장착
+        }
     }
 
     @Transactional

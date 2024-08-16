@@ -28,6 +28,7 @@ public class ItemResponse {
     @Builder
     @Getter
     public static class PurchaseDTO {
+        int life;
         int point;
     }
 
