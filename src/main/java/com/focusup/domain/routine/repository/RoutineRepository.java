@@ -17,7 +17,9 @@ import java.util.Optional;
 @NonNullApi
 public interface RoutineRepository extends JpaRepository<Routine, Long> {
     Optional<Routine> findById(Long id);
-    List<Routine> findByUser(User user);
+    // UserRoutine의 User 값을 기준으로 Routine을 조회하는 메서드
+    @Query("SELECT r FROM Routine r JOIN r.userRoutine ur WHERE ur.user = :user")
+    List<Routine> findByUser(@Param("user") User user);
 
     @Modifying
     @Query("DELETE FROM Routine r WHERE r.userRoutine.id IN (SELECT ur.id FROM UserRoutine ur WHERE ur.user.id = :userId)")
