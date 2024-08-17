@@ -12,6 +12,7 @@ import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,6 +127,8 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     @Transactional
     public List<UserRoutineResponseDTO.SpecRoutine> getSpecRoutine(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+        Hibernate.initialize(userRoutine.getRepeatCycleDay());
+
         List<Routine> routines = userRoutine.getRoutines();
 
         List<UserRoutineResponseDTO.SpecRoutine> specRoutines = routines.stream()
