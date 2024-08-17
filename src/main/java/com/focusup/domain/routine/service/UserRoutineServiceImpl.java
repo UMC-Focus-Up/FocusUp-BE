@@ -127,8 +127,6 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     @Transactional
     public List<UserRoutineResponseDTO.SpecRoutine> getSpecRoutine(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
-        Hibernate.initialize(userRoutine.getRepeatCycleDay());
-
         List<Routine> routines = userRoutine.getRoutines();
 
         List<UserRoutineResponseDTO.SpecRoutine> specRoutines = routines.stream()
@@ -146,6 +144,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     @Transactional
     public UserRoutineResponseDTO.UserRoutineDetail getUserRoutineDetail(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+        Hibernate.initialize(userRoutine.getRepeatCycleDay());
 
         // List DTO로 변환
         return UserRoutineResponseDTO.UserRoutineDetail.builder()
