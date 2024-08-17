@@ -24,7 +24,7 @@ public class UserRoutine extends BaseEntity {
     private String name;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<DayOfWeek> repeatCycleDay = new ArrayList<>();
+    private List<DayOfWeek> repeatCycleDay;
 
     @Column(nullable = false)
     private LocalDate startDate;
