@@ -39,7 +39,7 @@ public class RoutineServiceImpl implements RoutineService{
         User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
 
-        Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "startDate"));
+        Pageable pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdAt"));
         List<UserRoutine> userRoutines;
 
         // 유저 루틴 가져오기
@@ -95,6 +95,7 @@ public class RoutineServiceImpl implements RoutineService{
     }
 
     // 루틴 완료 service
+    @Transactional
     public Long finishRoutine(RoutineRequestDTO.FinishRoutine request, Long routineId, String oauthId) {
         // 유저 확인
         User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));

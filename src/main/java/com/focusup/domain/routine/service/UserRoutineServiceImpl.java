@@ -12,6 +12,7 @@ import com.focusup.global.apiPayload.code.ErrorCode;
 import com.focusup.global.apiPayload.exception.CustomException;
 import com.focusup.global.apiPayload.exception.RoutineException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,6 +124,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     // 유저 루틴 아이디를 통해 루틴 상제 정보 조회 service
+    @Transactional
     public List<UserRoutineResponseDTO.SpecRoutine> getSpecRoutine(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
         List<Routine> routines = userRoutine.getRoutines();
@@ -131,7 +133,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
                 .map(r -> UserRoutineResponseDTO.SpecRoutine.builder()
                         .id(r.getId())
                         .date(r.getDate())
-                        .startTime(userRoutine.getStartTime())
+                        .startTime(r.getUserRoutine().getStartTime())
                         .build())
                 .collect(Collectors.toList());
 
@@ -139,8 +141,9 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     // 유저 루틴 상세 정보 조회 service
+    @Transactional
     public UserRoutineResponseDTO.UserRoutineDetail getUserRoutineDetail(Long userRoutineId) {
-        UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+        UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.USER_ROUTINE_NOT_FOUND));
 
         // List DTO로 변환
         return UserRoutineResponseDTO.UserRoutineDetail.builder()
