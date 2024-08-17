@@ -23,7 +23,7 @@ public class UserRoutine extends BaseEntity {
     @Column(length = 30, nullable = false)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<DayOfWeek> repeatCycleDay = new ArrayList<>();
 
     @Column(nullable = false)
