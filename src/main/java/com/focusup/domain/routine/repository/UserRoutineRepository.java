@@ -18,6 +18,8 @@ public interface UserRoutineRepository extends JpaRepository<UserRoutine, Long> 
     List<UserRoutine> findByUser(User user);
     List<UserRoutine> findByUserOrderByStartDateAsc(User user);
     Optional<UserRoutine> findById(Long id);
+    @Query("SELECT ur FROM UserRoutine ur JOIN FETCH ur.repeatCycleDay WHERE ur.id = :id")
+    Optional<UserRoutine> findByIdWithCycleDays(@Param("id") Long id);
 
     Page<UserRoutine> findAllByUser(User user, Pageable pageable);
 
