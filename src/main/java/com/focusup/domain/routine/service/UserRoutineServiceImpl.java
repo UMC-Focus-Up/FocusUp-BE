@@ -143,7 +143,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     // 유저 루틴 상세 정보 조회 service
     @Transactional
     public UserRoutineResponseDTO.UserRoutineDetail getUserRoutineDetail(Long userRoutineId) {
-        UserRoutine userRoutine = userRoutineRepository.findByIdWithCycleDays(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+        UserRoutine userRoutine = userRoutineRepository.findByIdWithCycleDays(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.USER_ROUTINE_NOT_FOUND));
 
         // List DTO로 변환
         return UserRoutineResponseDTO.UserRoutineDetail.builder()
