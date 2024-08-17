@@ -123,6 +123,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     // 유저 루틴 아이디를 통해 루틴 상제 정보 조회 service
+    @Transactional
     public List<UserRoutineResponseDTO.SpecRoutine> getSpecRoutine(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
         List<Routine> routines = userRoutine.getRoutines();
@@ -139,7 +140,6 @@ public class UserRoutineServiceImpl implements UserRoutineService{
     }
 
     // 유저 루틴 상세 정보 조회 service
-    @Transactional
     public UserRoutineResponseDTO.UserRoutineDetail getUserRoutineDetail(Long userRoutineId) {
         UserRoutine userRoutine = userRoutineRepository.findById(userRoutineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
 
