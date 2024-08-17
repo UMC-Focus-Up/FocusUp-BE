@@ -23,6 +23,7 @@ public class UserRoutine extends BaseEntity {
     @Column(length = 30, nullable = false)
     private String name;
 
+    @ElementCollection
     private List<DayOfWeek> repeatCycleDay = new ArrayList<>();
 
     @Column(nullable = false)
