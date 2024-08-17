@@ -132,7 +132,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
                 .map(r -> UserRoutineResponseDTO.SpecRoutine.builder()
                         .id(r.getId())
                         .date(r.getDate())
-                        .startTime(userRoutine.getStartTime())
+                        .startTime(r.getUserRoutine().getStartTime())
                         .build())
                 .collect(Collectors.toList());
 
