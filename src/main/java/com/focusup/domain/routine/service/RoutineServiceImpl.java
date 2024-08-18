@@ -118,7 +118,7 @@ public class RoutineServiceImpl implements RoutineService{
         // 유저의 level successcount 확인
         LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
 
-        int boostCount = (int) execTime / 10;
+        int boostCount = (int) execTime;
         levelHistory.addSuccessCount(boostCount);
 
 // boostCount가 5 이상이면 레벨 업
