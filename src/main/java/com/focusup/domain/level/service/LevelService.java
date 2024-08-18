@@ -22,18 +22,20 @@ public class LevelService {
     private final LevelHistoryRepository levelHistoryRepository;
 
     @Transactional
-    public LevelHistory findLevel (String oauthId) {
+    public LevelHistory updateLevel(String oauthId, Long newLevel) {
         User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new MemberException(ErrorCode.USER_NOT_FOUND));
         LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
+        int originLevel = levelHistory.getLevel().getLevel();
 
-        return levelHistory;
-    }
-
-    @Transactional
-    public LevelHistory updateLevel(String oauthId, Long newLevel) {
-        LevelHistory levelHistory = findLevel(oauthId);
-        Level level = levelRepository.findById(newLevel).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
-        levelHistory.changeLevel(level);
+        if (newLevel == 0) {
+            Level level = levelRepository.findById(Long.valueOf(originLevel)).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
+            levelHistory.changeNewLevel(level);
+        } else if (newLevel != 0 && newLevel < originLevel){
+            Level level = levelRepository.findById(newLevel).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
+            levelHistory.changeNewLevel(level);
+        } else {
+            throw (new LevelException(ErrorCode.LEVEL_NOT_CHANGED));
+        }
 
         return levelHistory;
     }

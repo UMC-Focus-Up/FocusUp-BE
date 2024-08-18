@@ -141,8 +141,17 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
 
-        LevelHistory levelHistory = levelHistoryRepository.findByUserId(user.getId());
-        Level level = levelHistory.getLevel(); // 유저의 레벨 조회
+        int level;
+        Boolean isUserLevel;
+
+        // 유저의 레벨 조회
+        if (levelHistoryRepository.findByUser(user).getNewLevel().getLevel() < levelHistoryRepository.findByUser(user).getLevel().getLevel()) {
+            level = levelHistoryRepository.findByUser(user).getNewLevel().getLevel();
+            isUserLevel = false;
+        } else {
+            level = levelHistoryRepository.findByUser(user).getLevel().getLevel();
+            isUserLevel = true;
+        }
 
         List<UserRoutine> userRoutines = userRoutineRepository.findByUser(user); // 유저의 루틴 목록 조회
 
@@ -188,7 +197,8 @@ public class UserServiceImpl implements UserService{
         return UserResponse.homeInfoDTO.builder()
                 .life(user.getLife())
                 .point(user.getPoint())
-                .level(level.getLevel())
+                .level(level)
+                .isUserLevel(isUserLevel)
                 .routineId(routineId)
                 .routineName(routineName)
                 .execTime(execTime)
