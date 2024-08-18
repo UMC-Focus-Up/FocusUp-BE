@@ -16,6 +16,7 @@ public class RoutineResponseDTO {
     public static class MyPage {
         private List<UserRoutineResponseDTO.UserRoutine> userRoutines;
         private int level;
+        private Boolean isUserLevel;
         private int successCount;
         private List<DateRoutines> routines;
     }

@@ -61,9 +61,23 @@ public class RoutineServiceImpl implements RoutineService{
                 .entrySet().stream()
                 .map(entry -> convertToDateRoutinesDTO(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+
+        int level;
+        Boolean isUserLevel;
+
+        // levelHistory를 userId로 조회
+        if (levelHistoryRepository.findByUser(user).getNewLevel().getLevel() < levelHistoryRepository.findByUser(user).getLevel().getLevel()) {
+            level = levelHistoryRepository.findByUser(user).getNewLevel().getLevel();
+            isUserLevel = false;
+        } else {
+            level = levelHistoryRepository.findByUser(user).getLevel().getLevel();
+            isUserLevel = true;
+        }
+
         return RoutineResponseDTO.MyPage.builder()
                 .userRoutines(userRoutineDTOs)
-                .level(levelHistoryRepository.findByUser(user).getLevel().getLevel()) // levelHistory를 userId로 조회
+                .level(level)
+                .isUserLevel(isUserLevel)
                 .successCount(levelHistoryRepository.findByUser(user).getSuccessCount()) // levelHistory를 userId로 조회
                 .routines(dateRoutineDTOs)
                 .build();
