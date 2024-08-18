@@ -25,6 +25,9 @@ public class LevelService {
     public LevelHistory findLevel (String oauthId) {
         User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new MemberException(ErrorCode.USER_NOT_FOUND));
         LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
+        int originLevel = levelHistory.getLevel().getLevel();
+        Level level = levelRepository.findById(Long.valueOf(originLevel)).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
+        levelHistory.changeLevel(level);
 
         return levelHistory;
     }
