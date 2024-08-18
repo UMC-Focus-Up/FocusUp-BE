@@ -119,7 +119,8 @@ public class RoutineServiceImpl implements RoutineService{
         LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
 
         // execTime을 10분 단위로 나누어 boostCount를 증가
-        for (int i = 0; i < execTime / 10; i++) {
+        for (int i = 0; i < (int) execTime / 10; i++) {
+            System.out.println(execTime);
             levelHistory.addSuccessCount();
 
             // boostCount가 5 이상이면 레벨 업
