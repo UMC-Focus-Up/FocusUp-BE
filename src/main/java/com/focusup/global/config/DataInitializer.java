@@ -18,16 +18,12 @@ import java.util.Arrays;
 @Component
 public class DataInitializer {
 
-    private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final LevelRepository levelRepository;
-    private final LevelHistoryRepository levelHistoryRepository;
 
-    public DataInitializer(UserRepository userRepository, ItemRepository itemRepository, LevelRepository levelRepository, LevelHistoryRepository levelHistoryRepository) {
-        this.userRepository = userRepository;
+    public DataInitializer( ItemRepository itemRepository, LevelRepository levelRepository) {
         this.itemRepository = itemRepository;
         this.levelRepository = levelRepository;
-        this.levelHistoryRepository = levelHistoryRepository;
     }
 
     @PostConstruct
@@ -36,20 +32,13 @@ public class DataInitializer {
         if(levelRepository.count() == 0) {
             levelRepository.saveAll(Arrays.asList(
                     new Level(1, 2, 10),
-                    new Level(2, 3, 10),
-                    new Level(3, 4, 10),
-                    new Level(4, 5, 10),
-                    new Level(5, 6, 10),
-                    new Level(6, 7, 10),
-                    new Level(7, 8, 10)
+                    new Level(2, 3, 20),
+                    new Level(3, 4, 30),
+                    new Level(4, 5, 45),
+                    new Level(5, 6, 60),
+                    new Level(6, 7, 75),
+                    new Level(7, 8, 90)
             ));
-        }
-
-        // 더미 유저 + levelHistory 생성
-        if(userRepository.count() == 0) {
-            userRepository.save(new User("naver_111" ,SocialType.NAVER, 5, 400, null));
-            // 현재 레벨 1, 새로운 레벨 1로 설정 (임시)
-            levelHistoryRepository.save(new LevelHistory(levelRepository.findById(Long.valueOf(1)).get(), levelRepository.findById(Long.valueOf(1)).get(), userRepository.findById(Long.valueOf(1)).get()));
         }
 
         // 아이템 목록
