@@ -47,9 +47,8 @@ public class LevelHistory extends BaseEntity {
         return level.getLevel();
     }
 
-    public int addSuccessCount() {
-        this.successCount++;
-        return successCount;
+    public void addSuccessCount(int successCount) {
+        this.successCount += successCount;
     }
 
     public int changeSuccessCount(int successCount) {
