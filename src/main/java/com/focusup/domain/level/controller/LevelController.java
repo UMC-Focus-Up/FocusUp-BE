@@ -22,13 +22,7 @@ public class LevelController {
     @PutMapping("/user")
     @Operation(summary = "레벨 변경 API")
     public Response<LevelResponse.NewLevelResultDTO> changeNewLevel (@Auth String oauthId, @RequestParam(name = "level") Long level) {
-        // level이 0인 경우, 기존 레벨로 돌아간다고 가정
-        if (level == 0) {
-            LevelHistory levelHistory = levelService.findLevel(oauthId);
-            return Response.success(LevelHistoryConverter.toLevelResultDTO(levelHistory));
-        }
-
         LevelHistory updatedLevel = levelService.updateLevel(oauthId, level);
-        return Response.success(LevelHistoryConverter.toUpdateLevelResultDTO(updatedLevel));
+        return Response.success(LevelHistoryConverter.toUpdateLevelResultDTO(updatedLevel, level));
     }
 }

@@ -37,7 +37,7 @@ public class LevelHistory extends BaseEntity {
         this.user = user;
     }
 
-    public int changeLevel(Level newLevel) {
+    public int changeNewLevel(Level newLevel) {
         this.newLevel = newLevel;
         return newLevel.getLevel();
     }
