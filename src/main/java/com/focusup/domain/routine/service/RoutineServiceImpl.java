@@ -109,7 +109,6 @@ public class RoutineServiceImpl implements RoutineService{
     }
 
     // 루틴 완료 service
-    @Transactional
     public Long finishRoutine(RoutineRequestDTO.FinishRoutine request, Long routineId, String oauthId) {
         // 유저 확인
         User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
