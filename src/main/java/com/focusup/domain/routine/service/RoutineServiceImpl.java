@@ -117,22 +117,26 @@ public class RoutineServiceImpl implements RoutineService{
 
         // 유저의 level successcount 확인
         LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
-        levelHistory.addSuccessCount();
 
-        if (levelHistory.getSuccessCount() > 5) {
+        int boostCount = (int) execTime / 10;
+        levelHistory.addSuccessCount(boostCount);
+
+        // boostCount가 5 이상이면 레벨 업
+        while (levelHistory.getSuccessCount() >= 5) {
             long levelUp = levelHistory.getLevel().getLevel() + 1;
 
             if (levelUp < 8) {
-                Level updatedlevel = levelRepository.findById(levelUp).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
-                levelHistory.addLevel(updatedlevel);
-                levelHistory.changeSuccessCount(0);
-                
+                Level updatedLevel = levelRepository.findById(levelUp).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
+                levelHistory.addLevel(updatedLevel);
+                levelHistory.changeSuccessCount(levelHistory.getSuccessCount() - 5);
+
             } else {
                 throw (new LevelException(ErrorCode.LEVEL_TOO_HIGH));
             }
-
         }
 
-        return routineId;
+        levelHistoryRepository.save(levelHistory);
+
+        return execTime;
     }
 }
