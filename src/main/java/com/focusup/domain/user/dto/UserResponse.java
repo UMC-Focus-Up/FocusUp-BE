@@ -13,7 +13,7 @@ public class UserResponse {
         int life;
         int point;
         int level;
-        boolean levelChanged;
+        Boolean isUserLevel;
         Long routineId;
         String routineName;
         LocalTime execTime;

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LevelHistoryRepository extends JpaRepository<LevelHistory, Long> {
     LevelHistory findByUser(User user);
-    LevelHistory findByUserId(Long id);
 
     @Modifying
     @Query("DELETE FROM LevelHistory lh WHERE lh.user.id = :userId")

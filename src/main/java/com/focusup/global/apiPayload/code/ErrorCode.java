@@ -38,7 +38,8 @@ public enum ErrorCode {
 
     // Level 에러
     LEVEL_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 레벨입니다."),
-    LEVEL_TOO_HIGH(HttpStatus.BAD_REQUEST, "최고 레벨은 7레벨이며 그 이상으로는 올라갈 수 없습니다.");
+    LEVEL_TOO_HIGH(HttpStatus.BAD_REQUEST, "최고 레벨은 7레벨이며 그 이상으로는 올라갈 수 없습니다."),
+    LEVEL_NOT_CHANGED(HttpStatus.BAD_REQUEST, "기존 레벨 보다 높은 레벨로 변경할 수 없습니다.");
 
 
     private final HttpStatus httpStatus;
