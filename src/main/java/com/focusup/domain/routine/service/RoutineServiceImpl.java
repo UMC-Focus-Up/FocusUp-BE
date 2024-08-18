@@ -152,6 +152,6 @@ public class RoutineServiceImpl implements RoutineService{
 
         levelHistoryRepository.save(levelHistory);
 
-        return execTime;
+        return routineId;
     }
 }
