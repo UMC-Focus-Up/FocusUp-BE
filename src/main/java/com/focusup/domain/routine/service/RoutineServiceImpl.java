@@ -123,7 +123,7 @@ public class RoutineServiceImpl implements RoutineService{
         levelHistory.addSuccessCount(boostCount);
 
         // boostCount가 5 이상이면 레벨 업
-        while (levelHistory.getSuccessCount() > 5) {
+        while (levelHistory.getSuccessCount() > 4) {
             long levelUp = levelHistory.getLevel().getLevel() + 1;
 
             if (levelUp < 8) {
