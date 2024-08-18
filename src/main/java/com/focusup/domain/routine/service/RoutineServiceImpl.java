@@ -142,8 +142,8 @@ public class RoutineServiceImpl implements RoutineService{
             if (levelUp < 8) {
                 Level updatedLevel = levelRepository.findById(levelUp).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
                 levelHistory.addLevel(updatedLevel);
+                levelHistory.changeNewLevel(updatedLevel);
                 levelHistory.changeSuccessCount(levelHistory.getSuccessCount() - 5);
-
             } else {
                 throw (new LevelException(ErrorCode.LEVEL_TOO_HIGH));
             }
