@@ -101,6 +101,7 @@ public class RoutineServiceImpl implements RoutineService{
         User user = userRepository.findByOauthId(oauthId).orElseThrow(() -> new RoutineException(ErrorCode.USER_NOT_FOUND));
         // 루틴 id로 해당 루틴 가져오기
         Routine routine = routineRepository.findById(routineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
+
         // 전체 루틴 시간 (분 단위)
         long totalTime = Duration.between(LocalTime.MIDNIGHT, routine.getUserRoutine().getGoalTime()).toMinutes();
         // 실행 시간 (분 단위)
@@ -118,16 +119,17 @@ public class RoutineServiceImpl implements RoutineService{
         // 유저의 level successcount 확인
         LevelHistory levelHistory = levelHistoryRepository.findByUser(user);
 
-        int boostCount = (int) execTime / 10;
+        int boostCount = (int) execTime / levelHistory.getLevel().getMinute(); // level에 따란 boost time 변경
         levelHistory.addSuccessCount(boostCount);
 
         // boostCount가 5 이상이면 레벨 업
-        while (levelHistory.getSuccessCount() >= 5) {
+        while (levelHistory.getSuccessCount() > 5) {
             long levelUp = levelHistory.getLevel().getLevel() + 1;
 
             if (levelUp < 8) {
                 Level updatedLevel = levelRepository.findById(levelUp).orElseThrow(() -> new LevelException(ErrorCode.LEVEL_NOT_FOUND));
                 levelHistory.addLevel(updatedLevel);
+                levelHistory.changeNewLevel(updatedLevel); // newLevel도 함께 변경
                 levelHistory.changeSuccessCount(levelHistory.getSuccessCount() - 5);
 
             } else {
