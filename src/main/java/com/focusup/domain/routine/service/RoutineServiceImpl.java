@@ -130,11 +130,12 @@ public class RoutineServiceImpl implements RoutineService{
                 levelHistory.addLevel(updatedLevel);
                 levelHistory.changeSuccessCount(levelHistory.getSuccessCount() - 5);
 
-                levelRepository.save(updatedLevel);
             } else {
                 throw (new LevelException(ErrorCode.LEVEL_TOO_HIGH));
             }
         }
+
+        levelHistoryRepository.save(levelHistory);
 
         return routineId;
     }
