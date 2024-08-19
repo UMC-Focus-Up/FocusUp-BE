@@ -158,7 +158,8 @@ public class UserServiceImpl implements UserService{
         // 루틴 정보 기본 값 설정
         Long routineId = 0L;
         String routineName = "";
-        LocalTime execTime = LocalTime.of(0, 0);
+        LocalTime routineExecTime = LocalTime.of(0, 0);
+        LocalTime routineGoalTime = LocalTime.of(0, 0);
 
         if (!userRoutines.isEmpty()) { // 생성된 루틴이 존재한다면
             LocalDateTime now = LocalDateTime.now(); // 현재 시간
@@ -190,7 +191,8 @@ public class UserServiceImpl implements UserService{
             if (closestRoutineOpt.isPresent()) {
                 Routine closestRoutine = closestRoutineOpt.get();
                 routineId = closestRoutine.getId();
-                execTime = closestRoutine.getExecTime();
+                routineExecTime = closestRoutine.getExecTime();
+                routineGoalTime = closestRoutine.getUserRoutine().getGoalTime();
             }
         }
 
@@ -201,7 +203,8 @@ public class UserServiceImpl implements UserService{
                 .isUserLevel(isUserLevel)
                 .routineId(routineId)
                 .routineName(routineName)
-                .execTime(execTime)
+                .execTime(routineExecTime)
+                .goalTime(routineGoalTime)
                 .build();
     }
 

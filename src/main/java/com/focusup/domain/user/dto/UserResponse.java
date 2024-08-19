@@ -17,6 +17,7 @@ public class UserResponse {
         Long routineId;
         String routineName;
         LocalTime execTime;
+        LocalTime goalTime;
     }
 
     @Builder
