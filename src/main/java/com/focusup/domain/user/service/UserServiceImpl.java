@@ -137,12 +137,12 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public UserResponse.homeInfoDTO getHomeInfo(String oauthId) {
+    public UserResponse.homeInfoDTO getHomeInfo(String oauthId, Long routineId) {
         User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
 
         int level;
-        Boolean isUserLevel;
+        boolean isUserLevel;
 
         // 유저의 레벨 조회
         if (levelHistoryRepository.findByUser(user).getNewLevel().getLevel() < levelHistoryRepository.findByUser(user).getLevel().getLevel()) {
@@ -156,44 +156,65 @@ public class UserServiceImpl implements UserService{
         List<UserRoutine> userRoutines = userRoutineRepository.findByUser(user); // 유저의 루틴 목록 조회
 
         // 루틴 정보 기본 값 설정
-        Long routineId = 0L;
-        String routineName = "";
+        Long selectedRoutineId = 0L;
+        String selectedRoutineName = "";
         LocalTime routineExecTime = LocalTime.of(0, 0);
         LocalTime routineGoalTime = LocalTime.of(0, 0);
+        LocalDateTime now = LocalDateTime.now(); // 현재 시간
 
-        if (!userRoutines.isEmpty()) { // 생성된 루틴이 존재한다면
-            LocalDateTime now = LocalDateTime.now(); // 현재 시간
-            Optional<Routine> closestRoutineOpt = Optional.empty();
-            LocalTime closestTime = null;
+        if(routineId == 0){ // 선택한 루틴이 없을 경우
+            if (!userRoutines.isEmpty()) { // 생성된 루틴이 존재한다면
+                Optional<Routine> closestRoutineOpt = Optional.empty();
+                LocalTime closestTime = null;
 
-            for (UserRoutine userRoutine : userRoutines) {
-                if (userRoutine.getRepeatCycleDay().contains(now.getDayOfWeek())) { // 오늘 해야하는 루틴일 경우
-                    LocalTime startTime = userRoutine.getStartTime();
-                    LocalTime goalTime = userRoutine.getGoalTime();
-                    LocalTime currentTime = now.toLocalTime();
+                for (UserRoutine userRoutine : userRoutines) {
+                    if (userRoutine.getRepeatCycleDay().contains(now.getDayOfWeek())) { // 오늘 해야하는 루틴일 경우
+                        LocalTime startTime = userRoutine.getStartTime();
+                        LocalTime goalTime = userRoutine.getGoalTime();
+                        LocalTime currentTime = now.toLocalTime();
 
-                    // 현재 또는 미래에 진행해야 하는 경우
-                    if ((currentTime.isAfter(startTime) && currentTime.isBefore(goalTime)) || currentTime.isBefore(startTime)) {
-                        if (closestTime == null || closestTime.isAfter(startTime)) { // 가장 가까운 루틴 확인
-                            closestTime = startTime;
-                            closestRoutineOpt = userRoutine.getRoutines().stream()
-                                    .filter(routine -> routine.getDate().equals(now.toLocalDate()))
-                                    .findFirst();
-                            if (closestRoutineOpt.isPresent()) {
-                                routineName = userRoutine.getName(); // 루틴 이름 설정
+                        // 현재 또는 미래에 진행해야 하는 경우
+                        if ((currentTime.isAfter(startTime) && currentTime.isBefore(goalTime)) || currentTime.isBefore(startTime)) {
+                            if (closestTime == null || closestTime.isAfter(startTime)) { // 가장 가까운 루틴 확인
+                                closestTime = startTime;
+                                closestRoutineOpt = userRoutine.getRoutines().stream()
+                                        .filter(routine -> routine.getDate().equals(now.toLocalDate()))
+                                        .findFirst();
+                                if (closestRoutineOpt.isPresent()) {
+                                    selectedRoutineName = userRoutine.getName(); // 루틴 이름 설정
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // 현재 시간에 가장 가까운 루틴 정보 설정
-            if (closestRoutineOpt.isPresent()) {
-                Routine closestRoutine = closestRoutineOpt.get();
-                routineId = closestRoutine.getId();
-                routineExecTime = closestRoutine.getExecTime();
-                routineGoalTime = closestRoutine.getUserRoutine().getGoalTime();
+                // 현재 시간에 가장 가까운 루틴 정보 설정
+                if (closestRoutineOpt.isPresent()) {
+                    Routine closestRoutine = closestRoutineOpt.get();
+                    selectedRoutineId = closestRoutine.getId();
+                    selectedRoutineName = closestRoutine.getUserRoutine().getName();
+                    routineExecTime = closestRoutine.getExecTime();
+                    routineGoalTime = closestRoutine.getUserRoutine().getGoalTime();
+                }
             }
+        }
+        else{ // 선택한 루틴이 있을 경우
+           UserRoutine userRoutine = userRoutineRepository.findById(routineId)
+                   .orElseThrow(() -> new CustomException(ErrorCode.USER_ROUTINE_NOT_FOUND));
+           Optional<Routine> closestRoutineOpt = userRoutine.getRoutines().stream() // 현재 또는 미래에 해야 할 루틴 중 가장 가까운 루틴
+                    .filter(routine -> routine.getDate().isAfter(now.toLocalDate()) || routine.getDate().isEqual(now.toLocalDate()))
+                    .findFirst();
+
+           if(closestRoutineOpt.isPresent()){
+               Routine closestRoutine = closestRoutineOpt.get();
+               selectedRoutineId = closestRoutine.getId();
+               selectedRoutineName = userRoutine.getName();
+               routineExecTime = closestRoutine.getExecTime();
+               routineGoalTime = closestRoutine.getUserRoutine().getGoalTime();
+           }
+           else{
+               throw new CustomException(ErrorCode.ROUTINE_NOT_FOUND);
+           }
         }
 
         return UserResponse.homeInfoDTO.builder()
@@ -201,8 +222,8 @@ public class UserServiceImpl implements UserService{
                 .point(user.getPoint())
                 .level(level)
                 .isUserLevel(isUserLevel)
-                .routineId(routineId)
-                .routineName(routineName)
+                .routineId(selectedRoutineId)
+                .routineName(selectedRoutineName)
                 .execTime(routineExecTime)
                 .goalTime(routineGoalTime)
                 .build();
