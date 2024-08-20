@@ -10,7 +10,7 @@ public class UserRequest {
     }
 
     @Getter
-    public static class homeInfoDTO {
+    public static class homeRoutineInfoDTO {
         Long routineId;
     }
 }
