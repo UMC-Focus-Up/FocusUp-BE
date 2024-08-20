@@ -43,10 +43,10 @@ public class UserController {
         return Response.success();
     }
 
-    @GetMapping("/home")
+    @PostMapping("/home")
     @Operation(summary = "홈 조회 api")
-    public Response<?> getHomeInfo(@Auth String oauthId){
-        return Response.success(userService.getHomeInfo(oauthId));
+    public Response<?> getHomeInfo(@Auth String oauthId, @RequestBody UserRequest.homeInfoDTO request){
+        return Response.success(userService.getHomeInfo(oauthId, request.getRoutineId()));
     }
 
     @GetMapping("/character")
