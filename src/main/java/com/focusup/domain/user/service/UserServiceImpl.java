@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public UserResponse.homeInfoDTO getHomeInfo(String oauthId, Long routineId) {
+    public UserResponse.homeUserInfoDTO getHomeUserInfo(String oauthId) {
         User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
 
@@ -152,6 +152,20 @@ public class UserServiceImpl implements UserService{
             level = levelHistoryRepository.findByUser(user).getLevel().getLevel();
             isUserLevel = true;
         }
+
+        return UserResponse.homeUserInfoDTO.builder()
+                .life(user.getLife())
+                .point(user.getPoint())
+                .level(level)
+                .isUserLevel(isUserLevel)
+                .build();
+    }
+
+    @Transactional
+    @Override
+    public UserResponse.homeRoutineInfoDTO getHomeRoutineInfo(String oauthId, Long routineId) {
+        User user = userRepository.findByOauthId(oauthId)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
 
         List<UserRoutine> userRoutines = userRoutineRepository.findByUser(user); // 유저의 루틴 목록 조회
 
@@ -199,35 +213,32 @@ public class UserServiceImpl implements UserService{
             }
         }
         else{ // 선택한 루틴이 있을 경우
-           UserRoutine userRoutine = userRoutineRepository.findById(routineId)
-                   .orElseThrow(() -> new CustomException(ErrorCode.USER_ROUTINE_NOT_FOUND));
-           Optional<Routine> closestRoutineOpt = userRoutine.getRoutines().stream() // 현재 또는 미래에 해야 할 루틴 중 가장 가까운 루틴
+            UserRoutine userRoutine = userRoutineRepository.findById(routineId)
+                    .orElseThrow(() -> new CustomException(ErrorCode.USER_ROUTINE_NOT_FOUND));
+            Optional<Routine> closestRoutineOpt = userRoutine.getRoutines().stream() // 현재 또는 미래에 해야 할 루틴 중 가장 가까운 루틴
                     .filter(routine -> routine.getDate().isAfter(now.toLocalDate()) || routine.getDate().isEqual(now.toLocalDate()))
                     .findFirst();
 
-           if(closestRoutineOpt.isPresent()){
-               Routine closestRoutine = closestRoutineOpt.get();
-               selectedRoutineId = closestRoutine.getId();
-               selectedRoutineName = userRoutine.getName();
-               routineExecTime = closestRoutine.getExecTime();
-               routineGoalTime = closestRoutine.getUserRoutine().getGoalTime();
-           }
-           else{
-               throw new CustomException(ErrorCode.ROUTINE_NOT_FOUND);
-           }
+            if(closestRoutineOpt.isPresent()){
+                Routine closestRoutine = closestRoutineOpt.get();
+                selectedRoutineId = closestRoutine.getId();
+                selectedRoutineName = userRoutine.getName();
+                routineExecTime = closestRoutine.getExecTime();
+                routineGoalTime = closestRoutine.getUserRoutine().getGoalTime();
+            }
+            else{
+                throw new CustomException(ErrorCode.ROUTINE_NOT_FOUND);
+            }
         }
 
-        return UserResponse.homeInfoDTO.builder()
-                .life(user.getLife())
-                .point(user.getPoint())
-                .level(level)
-                .isUserLevel(isUserLevel)
+        return UserResponse.homeRoutineInfoDTO.builder()
                 .routineId(selectedRoutineId)
                 .routineName(selectedRoutineName)
                 .execTime(routineExecTime)
                 .goalTime(routineGoalTime)
                 .build();
     }
+
 
     @Transactional
     @Override

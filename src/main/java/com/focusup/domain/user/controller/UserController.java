@@ -43,10 +43,16 @@ public class UserController {
         return Response.success();
     }
 
-    @PostMapping("/home")
-    @Operation(summary = "홈 조회 api")
-    public Response<?> getHomeInfo(@Auth String oauthId, @RequestBody UserRequest.homeInfoDTO request){
-        return Response.success(userService.getHomeInfo(oauthId, request.getRoutineId()));
+    @GetMapping("/home")
+    @Operation(summary = "홈 화면의 유저 정보 조회 api")
+    public Response<?> getHomeUserInfo(@Auth String oauthId){
+        return Response.success(userService.getHomeUserInfo(oauthId));
+    }
+
+    @PostMapping("/home/routine")
+    @Operation(summary = "홈 화면의 루틴 조회 api")
+    public Response<?> getHomeRoutineInfo(@Auth String oauthId, @RequestBody UserRequest.homeRoutineInfoDTO request){
+        return Response.success(userService.getHomeRoutineInfo(oauthId, request.getRoutineId()));
     }
 
     @GetMapping("/character")

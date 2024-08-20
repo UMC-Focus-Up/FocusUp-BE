@@ -9,11 +9,16 @@ public class UserResponse {
 
     @Builder
     @Getter
-    public static class homeInfoDTO {
+    public static class homeUserInfoDTO {
         int life;
         int point;
         int level;
-        Boolean isUserLevel;
+        boolean isUserLevel;
+    }
+
+    @Builder
+    @Getter
+    public static class homeRoutineInfoDTO {
         Long routineId;
         String routineName;
         LocalTime execTime;
