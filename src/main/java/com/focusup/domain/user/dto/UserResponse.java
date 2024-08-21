@@ -14,11 +14,6 @@ public class UserResponse {
         int point;
         int level;
         boolean isUserLevel;
-    }
-
-    @Builder
-    @Getter
-    public static class homeRoutineInfoDTO {
         Long routineId;
         String routineName;
         LocalTime execTime;

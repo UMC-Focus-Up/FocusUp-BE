@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService{
 
     @Transactional
     @Override
-    public UserResponse.homeUserInfoDTO getHomeUserInfo(String oauthId) {
+    public UserResponse.homeUserInfoDTO getHomeInfo(String oauthId, Long routineId) {
         User user = userRepository.findByOauthId(oauthId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
 
@@ -152,20 +152,6 @@ public class UserServiceImpl implements UserService{
             level = levelHistoryRepository.findByUser(user).getLevel().getLevel();
             isUserLevel = true;
         }
-
-        return UserResponse.homeUserInfoDTO.builder()
-                .life(user.getLife())
-                .point(user.getPoint())
-                .level(level)
-                .isUserLevel(isUserLevel)
-                .build();
-    }
-
-    @Transactional
-    @Override
-    public UserResponse.homeRoutineInfoDTO getHomeRoutineInfo(String oauthId, Long routineId) {
-        User user = userRepository.findByOauthId(oauthId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND)); // 유저 조회 및 예외 처리
 
         List<UserRoutine> userRoutines = userRoutineRepository.findByUser(user); // 유저의 루틴 목록 조회
 
@@ -231,14 +217,17 @@ public class UserServiceImpl implements UserService{
             }
         }
 
-        return UserResponse.homeRoutineInfoDTO.builder()
+        return UserResponse.homeUserInfoDTO.builder()
+                .life(user.getLife())
+                .point(user.getPoint())
+                .level(level)
+                .isUserLevel(isUserLevel)
                 .routineId(selectedRoutineId)
                 .routineName(selectedRoutineName)
                 .execTime(routineExecTime)
                 .goalTime(routineGoalTime)
                 .build();
     }
-
 
     @Transactional
     @Override
