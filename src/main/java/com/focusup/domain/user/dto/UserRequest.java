@@ -8,9 +8,4 @@ public class UserRequest {
     public static class addPointDTO {
         int point;
     }
-
-    @Getter
-    public static class homeRoutineInfoDTO {
-        Long routineId;
-    }
 }
