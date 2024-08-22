@@ -118,6 +118,12 @@ public class RoutineServiceImpl implements RoutineService{
 
         // 전체 루틴 시간 (분 단위)
         long totalTime = Duration.between(routine.getUserRoutine().getStartTime(), routine.getUserRoutine().getGoalTime()).toMinutes();
+
+        // 만약 startTime이 goalTime보다 크면 totalTime에 1440분을 더해줌 (24시간)
+        if (totalTime < 0) {
+            totalTime += 1440;
+        }
+
         // 실행 시간 (분 단위)
         long execTime = Duration.between(LocalTime.MIDNIGHT, request.getExecTime()).toMinutes();
         // 달성률 계산
