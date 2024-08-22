@@ -117,7 +117,7 @@ public class RoutineServiceImpl implements RoutineService{
         Routine routine = routineRepository.findById(routineId).orElseThrow(() -> new RoutineException(ErrorCode.ROUTINE_NOT_FOUND));
 
         // 전체 루틴 시간 (분 단위)
-        long totalTime = Duration.between(routine.getUserRoutine().getStartTime(), routine.getUserRoutine().getGoalTime()).toMinutes();
+        long totalTime = Duration.between(routine.getUserRoutine().getGoalTime(), routine.getUserRoutine().getStartTime()).toMinutes();
         // 실행 시간 (분 단위)
         long execTime = Duration.between(LocalTime.MIDNIGHT, request.getExecTime()).toMinutes();
         // 달성률 계산
