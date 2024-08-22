@@ -36,7 +36,7 @@ public class UserRoutineServiceImpl implements UserRoutineService{
 
     // 유저 루틴 생성 service
     @Transactional
-    public UserRoutineResponseDTO.createUserRoutine createUserRoutine(UserRoutineRequestDTO.CreateRoutine request, String oauthId) {
+    public Long createUserRoutine(UserRoutineRequestDTO.CreateRoutine request, String oauthId) {
         // 종료일 설정(우선 한달
         LocalDate endDate = request.getStartDate().plusMonths(1);
         // List를 EnumSet으로 변경
@@ -78,19 +78,11 @@ public class UserRoutineServiceImpl implements UserRoutineService{
             routines.add(createRoutineInfo(date, userRoutine));
         }
 
-        // 루틴 ID DTO로 변환
-        List<UserRoutineResponseDTO.RoutineId> routineIdDTOs = routines.stream()
-                .map(ur -> UserRoutineResponseDTO.RoutineId.builder()
-                        .id(ur.getId())
-                        .build())
-                .toList();
-
-        UserRoutineResponseDTO.createUserRoutine createUserRoutineDTO = UserRoutineResponseDTO.createUserRoutine.builder()
-                .id(userRoutine.getId())
-                .routineIds(routineIdDTOs)
+        userRoutine = userRoutine.toBuilder()
+                .routines(routines)
                 .build();
 
-        return createUserRoutineDTO;
+        return userRoutine.getId();
     }
 
     @Transactional
