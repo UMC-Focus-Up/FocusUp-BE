@@ -17,9 +17,9 @@ public class UserRoutineController {
 
     // 유저 루틴 생성하기 POST method - 나중에 userId 삭제 필요
     @PostMapping("/create")
-    public Response<Long> createRoutine(@RequestBody UserRoutineRequestDTO.CreateRoutine request, @Auth String oauthId) {
-        Long newUserRoutineId = userRoutineService.createUserRoutine(request, oauthId);
-        return Response.success(newUserRoutineId);
+    public Response<UserRoutineResponseDTO.createUserRoutine> createRoutine(@RequestBody UserRoutineRequestDTO.CreateRoutine request, @Auth String oauthId) {
+        UserRoutineResponseDTO.createUserRoutine newUserRoutine = userRoutineService.createUserRoutine(request, oauthId);
+        return Response.success(newUserRoutine);
     }
 
     // 유저 루틴 삭제하기 DELETE method

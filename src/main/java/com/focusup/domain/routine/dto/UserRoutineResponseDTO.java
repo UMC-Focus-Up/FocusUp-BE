@@ -33,6 +33,22 @@ public class UserRoutineResponseDTO {
         private String name;
     }
 
+    // routine id만
+    @Getter
+    @Builder
+    public static class createUserRoutine {
+        private Long id;
+        private List<RoutineId> routineIds;
+    }
+
+    // routine id만
+    @Getter
+    @Builder
+    public static class RoutineId {
+        private Long id;
+    }
+
+
     // 유저 루틴 제목 및 세부 루틴 DTO
     @Getter
     @Builder
